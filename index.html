@@ -1,0 +1,272 @@
+<html lang="pt_BR">
+
+    <head>
+        <meta charset="utf-8"/>
+        <title>Trabalho Grafos</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+        <style>
+            body {
+                margin: 0 6vw 0 6vw;
+            }
+
+            .board {
+                margin: 10px;
+                background-color: grey;
+                border-radius: 5px;
+                border: 5px solid grey;
+                display: flex;
+                justify-self: center;
+                color: white;
+            }
+
+            .board canvas {
+                margin: 10px;
+            }
+
+            .board .instructions {
+                margin: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page">
+            <div class="board">
+                <canvas id="canvas" width="600" height="600"></canvas>
+                <div class="instructions">
+                    <p>Instruções:</p>
+                    <p>Botão Esquerdo do Mouse: Cria e/ou seleciona vertices</p>
+                    <p>Botão Direito do Mouse: Deleta vertices</p>
+                    <p>Shift + Botão Esquerdo do Mouse: Cria uma aresta entre dois vertices.</p>
+                    <p>Shift + Botão Direito do Mouse: Deleta uma aresta entre dois vertices</p>
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+
+    <script>
+        const verticeSize = 20
+
+        class Vertice {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            isColliding(vertice) {
+                let distSq = (this.x - vertice.x) * (this.x - vertice.x) + (this.y - vertice.y) * (this.y - vertice.y);
+                let radSumSq = verticeSize * verticeSize;
+                return (distSq !== radSumSq && distSq <= radSumSq)
+            }
+
+            isPointInside(x, y) {
+                return (x - this.x)*(x - this.x) + (y - this.y)*(y - this.y) <= (verticeSize/2)*(verticeSize/2)
+            }
+        }
+
+        class Edge {
+            constructor(vertice1, vertice2, directed) {
+                this.vertice1 = vertice1
+                this.vertice2 = vertice2
+                this.directed = directed
+            }
+
+            isEqual(edge) {
+                return (this.vertice1 === edge.vertice1 && this.vertice2 === edge.vertice2) || (this.vertice2 === edge.vertice1 && this.vertice1 === edge.vertice2)
+            }
+        }
+
+        class Graph {
+            constructor(onUpdate) {
+                this.vertices = []
+                this.edges = []
+                this.onUpdate = onUpdate
+            }
+
+            getVertice(x, y) {
+                let vertice = null
+                this.vertices.forEach((v) => {
+                    if(v.isPointInside(x, y)) {
+                        vertice = v
+                        this.onUpdate()
+                    }
+                })
+                return vertice
+            }
+
+            addVertice(vertice) {
+                let colliding = this.isVerticeColliding(vertice)
+                if(!colliding) {
+                    this.vertices.push(vertice)
+                    this.onUpdate()
+                }
+                return !colliding
+            }
+
+            removeVertice(vertice) {
+                const index = this.vertices.indexOf(vertice);
+                if (index > -1) {
+                    this.vertices.splice(index, 1);
+                }
+            }
+
+            isVerticeColliding(vertice) {
+                let colliding = false
+                this.vertices.forEach((v) => {
+                    if(v !== vertice && v.isColliding(vertice)) {
+                        colliding = true
+                    }
+                })
+                return colliding
+            }
+
+            getEdge(vertice1, vertice2) {
+                let edge = null
+                let equalEdge = new Edge(vertice1, vertice2)
+                this.edges.forEach((e) => {
+                    if(e.isEqual(equalEdge)) {
+                        edge = e
+                    }
+                })
+                return edge
+            }
+
+            addEdge(edge) {
+                let colliding = false
+                this.edges.forEach((e) => {
+                    if(e.isEqual(edge)) {
+                        colliding = true
+                    }
+                })
+                if(!colliding) {
+                    this.edges.push(edge)
+                    this.onUpdate()
+                }
+                return !colliding
+            }
+
+            removeEdge(edge) {
+                const index = this.edges.indexOf(edge);
+                if (index > -1) {
+                    this.edges.splice(index, 1);
+                }
+            }
+        }
+
+        const canvas = document.getElementById("canvas");
+        const rect = canvas.getBoundingClientRect();
+        const context = canvas.getContext("2d");
+        let onCanvas = false
+
+        const graph = new Graph(updateCanvas)
+        let selectedVertice = null
+        let draggingVertice = null
+
+        document.body.oncontextmenu = function (event) {
+            if(onCanvas) {
+                event.preventDefault()
+            }
+        }
+
+        document.body.onmousedown = function (event) {
+            if(onCanvas) {
+                let vertice = graph.getVertice(event.x - rect.left, event.y - rect.top)
+                if(event.button === 0) {
+                    if (event.shiftKey) {
+                        if (vertice != null && selectedVertice != null && vertice !== selectedVertice) {
+                            graph.addEdge(new Edge(selectedVertice, vertice))
+                        }
+                    } else {
+                        draggingVertice = vertice
+                    }
+                }else if(event.button === 2) {
+                    if (event.shiftKey) {
+                        if(vertice != null && selectedVertice != null && vertice !== selectedVertice) {
+                            let edge = graph.getEdge(selectedVertice, vertice)
+                            if(edge != null) {
+                                graph.removeEdge(edge)
+                            }
+                        }
+                    } else {
+                        graph.removeVertice(vertice)
+                    }
+                }
+                updateCanvas()
+            }
+        }
+
+        document.body.onmouseup = function (event) {
+            if(onCanvas) {
+                if(event.button === 0) {
+                    if (draggingVertice != null) {
+                        selectedVertice = draggingVertice
+                        draggingVertice = null
+                    } else {
+                        if (graph.getVertice(event.x - rect.left, event.y - rect.top) == null) {
+                            let vertice = new Vertice(event.x - rect.left, event.y - rect.top)
+                            let created = graph.addVertice(vertice)
+                            if(created) {
+                                selectedVertice = vertice
+                            }
+                        }
+                    }
+                }
+                updateCanvas()
+            }
+        }
+
+        document.body.onmousemove = function (event) {
+            if(event.x >= rect.left && event.x <= rect.right && event.y >= rect.top && event.y <= rect.bottom) {
+                onCanvas = true
+                if(draggingVertice != null) {
+                    let backupX = draggingVertice.x
+                    let backupY = draggingVertice.y
+                    draggingVertice.x = event.x - rect.left
+                    draggingVertice.y = event.y - rect.top
+                    if(!graph.isVerticeColliding(draggingVertice)) {
+                        updateCanvas()
+                    }else{
+                        draggingVertice.x = backupX
+                        draggingVertice.y = backupY
+                    }
+                }
+            }
+        }
+
+        function updateCanvas() {
+            context.fillStyle = "rgb(255, 255, 255)"
+            context.rect(0, 0, canvas.width, canvas.height)
+            context.fill()
+            graph.edges.forEach((edge) => {
+                context.strokeStyle = "rgb(0, 0, 255)"
+                context.beginPath()
+                context.moveTo(edge.vertice1.x, edge.vertice1.y)
+                context.lineTo(edge.vertice2.x, edge.vertice2.y)
+                context.closePath()
+                context.stroke()
+            })
+            graph.vertices.forEach((vertice) => {
+                if(vertice === draggingVertice) {
+                    context.fillStyle = "rgb(255, 0, 0)"
+                }else if(vertice === selectedVertice){
+                    context.fillStyle = "rgb(0, 255, 0)"
+                }else{
+                    context.fillStyle = "rgb(0, 0, 0)"
+                }
+                context.beginPath()
+                context.arc(vertice.x, vertice.y, verticeSize/2, 0, 2*Math.PI)
+                context.closePath()
+                context.fill()
+            })
+        }
+
+        updateCanvas()
+
+    </script>
+
+</html>
