@@ -14,7 +14,13 @@ function drawEdge(edge) {
 }
 
 function drawVertice(vertice) {
-    context.fillStyle = "#00BFB3"
+    if(vertice === graph.startVertice) {
+        context.fillStyle = "#FFE66D"
+    }else if(vertice === graph.endVertice) {
+        context.fillStyle = "#FF6B6B"
+    }else {
+        context.fillStyle = "#00BFB3"
+    }
     context.beginPath()
     context.arc(vertice.x, vertice.y, verticeSize/2, 0, 2*Math.PI)
     context.closePath()
@@ -24,7 +30,7 @@ function drawVertice(vertice) {
     context.textAlign = "center"
     context.textBaseline = "middle"
     context.fillText(vertice.value, vertice.x, vertice.y)
-    if(vertice === selectedVertice) {
+    if(vertice === graph.selectedVertice) {
         context.strokeStyle = "#D6FFFC"
         context.stroke()
     }

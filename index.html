@@ -10,15 +10,13 @@
     </head>
 
     <body>
-        <div class="top">
-        </div>
         <div class="board">
             <div class="panel">
-                <button type="button" class="btn btn-danger">Limpar grafo</button>
+                <a class="btn btn-danger" onclick="graph.clear()">Limpar grafo</a>
                 <div class="flex-grow-1"></div>
                 <h3>Criação de Grafos</h3>
                 <div class="flex-grow-1"></div>
-                <button type="button" class="btn btn-success">Continuar</button>
+                <a class="btn btn-success" onclick="console.log(btoa(JSON.stringify(graph)))">Continuar</a>
             </div>
             <div class="center">
                 <canvas id="canvas" width="600" height="600"></canvas>
@@ -36,6 +34,10 @@
                         +: Aumenta o valor do vertice selecionado
                         <br>
                         -: Diminui o valor do vertice selecionado
+                        <br>
+                        S: Marca o vértice como vértice de inicio
+                        <br>
+                        E: Marca o vértice como vértice de fim
                     </p>
                 </div>
             </div>

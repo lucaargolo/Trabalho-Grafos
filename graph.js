@@ -32,9 +32,21 @@ class Edge {
 
 class Graph {
     constructor(onUpdate) {
+        this.selectedVertice = null
+        this.startVertice = null
+        this.endVertice = null
         this.vertices = []
         this.edges = []
         this.onUpdate = onUpdate
+    }
+
+    clear() {
+        this.selectedVertice = null
+        this.startVertice = null
+        this.endVertice = null
+        this.vertices = []
+        this.edges = []
+        this.onUpdate()
     }
 
     getVertice(x, y) {
