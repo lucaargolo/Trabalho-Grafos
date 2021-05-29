@@ -9,53 +9,89 @@
 
         <style>
             body {
-                margin: 0 6vw 0 6vw;
+                background-color: #060D0F;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .board {
                 margin: 10px;
-                background-color: grey;
+                background-color: #0C191D;
+                border: 5px solid #0C191D;
                 border-radius: 5px;
-                border: 5px solid grey;
+                color: white;
+                width: fit-content;
+            }
+
+            .board .panel {
+                margin: 10px;
+                display: flex;
+            }
+
+            .board .center {
                 display: flex;
                 justify-self: center;
-                color: white;
             }
 
             .board canvas {
                 margin: 10px;
+                background-color: #11262C;
+                border: 5px solid #11262C;
+                border-radius: 5px;
             }
 
             .board .instructions {
                 margin: 10px;
+                padding: 10px;
+                background-color: #11262C;
+                border: 5px solid #11262C;
+                border-radius: 5px;
             }
         </style>
     </head>
 
     <body>
-        <div class="page">
-            <div class="board">
+        <div class="top">
+        </div>
+        <div class="board">
+            <div class="panel">
+                <button type="button" class="btn btn-danger">Limpar grafo</button>
+                <div class="flex-grow-1"></div>
+                <h3>Criação de Grafos</h3>
+                <div class="flex-grow-1"></div>
+                <button type="button" class="btn btn-success">Continuar</button>
+            </div>
+            <div class="center">
                 <canvas id="canvas" width="600" height="600"></canvas>
                 <div class="instructions">
-                    <p>Instruções:</p>
-                    <p>Botão Esquerdo do Mouse: Cria e/ou seleciona vertices</p>
-                    <p>Botão Direito do Mouse: Deleta vertices</p>
-                    <p>Shift + Botão Esquerdo do Mouse: Cria uma aresta entre dois vertices.</p>
-                    <p>Shift + Botão Direito do Mouse: Deleta uma aresta entre dois vertices</p>
+                    <h4>Instruções:</h4>
+                    <p>
+                        Botão Esquerdo do Mouse: Cria e/ou seleciona vertices
+                        <br>
+                        Botão Direito do Mouse: Deleta vertices
+                        <br>
+                        Shift + Botão Esquerdo do Mouse: Cria uma aresta entre dois vertices.
+                        <br>
+                        Shift + Botão Direito do Mouse: Deleta uma aresta entre dois vertices
+                        <br>
+                        +: Aumenta o valor do vertice selecionado
+                        <br>
+                        -: Diminui o valor do vertice selecionado
+                    </p>
                 </div>
             </div>
         </div>
-
-
     </body>
 
     <script>
-        const verticeSize = 20
+        const verticeSize = 30
 
         class Vertice {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
+                this.value = 0
             }
 
             isColliding(vertice) {
@@ -112,6 +148,15 @@
                 const index = this.vertices.indexOf(vertice);
                 if (index > -1) {
                     this.vertices.splice(index, 1);
+                    let edgesToRemove = []
+                    this.edges.forEach((e) => {
+                        if(vertice === e.vertice1 || vertice === e.vertice2) {
+                            edgesToRemove.push(e)
+                        }
+                    })
+                    edgesToRemove.forEach((e) => {
+                        this.removeEdge(e)
+                    })
                 }
             }
 
@@ -166,6 +211,7 @@
         const graph = new Graph(updateCanvas)
         let selectedVertice = null
         let draggingVertice = null
+        let drawingEdge = null
 
         document.body.oncontextmenu = function (event) {
             if(onCanvas) {
@@ -180,9 +226,11 @@
                     if (event.shiftKey) {
                         if (vertice != null && selectedVertice != null && vertice !== selectedVertice) {
                             graph.addEdge(new Edge(selectedVertice, vertice))
+                            drawingEdge = null
                         }
                     } else {
                         draggingVertice = vertice
+                        selectedVertice = vertice
                     }
                 }else if(event.button === 2) {
                     if (event.shiftKey) {
@@ -203,16 +251,13 @@
         document.body.onmouseup = function (event) {
             if(onCanvas) {
                 if(event.button === 0) {
-                    if (draggingVertice != null) {
-                        selectedVertice = draggingVertice
+                    if(draggingVertice != null) {
                         draggingVertice = null
-                    } else {
-                        if (graph.getVertice(event.x - rect.left, event.y - rect.top) == null) {
-                            let vertice = new Vertice(event.x - rect.left, event.y - rect.top)
-                            let created = graph.addVertice(vertice)
-                            if(created) {
-                                selectedVertice = vertice
-                            }
+                    }else if (graph.getVertice(event.x - rect.left, event.y - rect.top) == null) {
+                        let vertice = new Vertice(event.x - rect.left, event.y - rect.top)
+                        let created = graph.addVertice(vertice)
+                        if(created) {
+                            selectedVertice = vertice
                         }
                     }
                 }
@@ -228,43 +273,83 @@
                     let backupY = draggingVertice.y
                     draggingVertice.x = event.x - rect.left
                     draggingVertice.y = event.y - rect.top
-                    if(!graph.isVerticeColliding(draggingVertice)) {
-                        updateCanvas()
-                    }else{
+                    if(graph.isVerticeColliding(draggingVertice)) {
                         draggingVertice.x = backupX
                         draggingVertice.y = backupY
                     }
+                }else if(selectedVertice != null && event.shiftKey) {
+                    drawingEdge = new Edge(selectedVertice, new Vertice(event.x - rect.left, event.y - rect.top))
+                }else{
+                    drawingEdge = null
                 }
+                updateCanvas()
+            }
+        }
+
+        document.body.onkeypress = function (event) {
+            switch (event.key) {
+                case '+':
+                    if(selectedVertice != null) {
+                        selectedVertice.value++
+                    }
+                    break
+                case '-':
+                    if(selectedVertice != null) {
+                        selectedVertice.value--
+                    }
+                    break
+                default:
+                    break
+            }
+            updateCanvas()
+        }
+
+        function clearCanvas() {
+            context.fillStyle = "#11262C"
+            context.rect(0, 0, canvas.width, canvas.height)
+            context.fill()
+        }
+
+        function drawEdge(edge) {
+            context.strokeStyle = "#D6FFFC"
+            context.beginPath()
+            context.moveTo(edge.vertice1.x, edge.vertice1.y)
+            context.lineTo(edge.vertice2.x, edge.vertice2.y)
+            context.closePath()
+            context.stroke()
+        }
+
+        function drawVertice(vertice) {
+            context.fillStyle = "#00BFB3"
+            context.beginPath()
+            context.arc(vertice.x, vertice.y, verticeSize/2, 0, 2*Math.PI)
+            context.closePath()
+            context.fill()
+            context.fillStyle = "#D6FFFC"
+            context.font = "16px sans-serif"
+            context.textAlign = "center"
+            context.textBaseline = "middle"
+            context.fillText(vertice.value, vertice.x, vertice.y)
+            if(vertice === selectedVertice) {
+                context.strokeStyle = "#D6FFFC"
+                context.stroke()
             }
         }
 
         function updateCanvas() {
-            context.fillStyle = "rgb(255, 255, 255)"
-            context.rect(0, 0, canvas.width, canvas.height)
-            context.fill()
+            clearCanvas()
+            if(drawingEdge != null) {
+                drawEdge(drawingEdge)
+            }
             graph.edges.forEach((edge) => {
-                context.strokeStyle = "rgb(0, 0, 255)"
-                context.beginPath()
-                context.moveTo(edge.vertice1.x, edge.vertice1.y)
-                context.lineTo(edge.vertice2.x, edge.vertice2.y)
-                context.closePath()
-                context.stroke()
+                drawEdge(edge)
             })
             graph.vertices.forEach((vertice) => {
-                if(vertice === draggingVertice) {
-                    context.fillStyle = "rgb(255, 0, 0)"
-                }else if(vertice === selectedVertice){
-                    context.fillStyle = "rgb(0, 255, 0)"
-                }else{
-                    context.fillStyle = "rgb(0, 0, 0)"
-                }
-                context.beginPath()
-                context.arc(vertice.x, vertice.y, verticeSize/2, 0, 2*Math.PI)
-                context.closePath()
-                context.fill()
+                drawVertice(vertice)
             })
         }
 
+        context.lineWidth = 3
         updateCanvas()
 
     </script>
