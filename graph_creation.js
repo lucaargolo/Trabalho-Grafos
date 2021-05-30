@@ -24,7 +24,7 @@ document.body.onmousemove = function (event) {
                 draggingVertice.y = backupY
             }
         }else if(graph.selectedVertice != null && drawingEdge != null) {
-            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my))
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), drawingEdge.directed)
         }
         drawCanvas(drawingEdge)
     }else{
@@ -44,14 +44,18 @@ document.body.onmousedown = function (event) {
         if(event.button === 0) {
             if (event.shiftKey) {
                 if (vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
-                    graph.addEdge(new Edge(graph.selectedVertice, vertice))
+                    graph.addEdge(new Edge(graph.selectedVertice, vertice, false))
+                }
+            } else if(event.ctrlKey) {
+                if (vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
+                    graph.addEdge(new Edge(graph.selectedVertice, vertice, true))
                 }
             } else {
                 draggingVertice = vertice
                 graph.selectedVertice = vertice
             }
         }else if(event.button === 2) {
-            if (event.shiftKey) {
+            if (event.shiftKey || event.ctrlKey) {
                 if(vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
                     let edge = graph.getEdge(graph.selectedVertice, vertice)
                     if(edge != null) {
@@ -117,18 +121,19 @@ document.body.onkeyup = function (event) {
         }
         drawCanvas(drawingEdge)
     }
-    if(onCanvas) {
-        if(!event.shiftKey) {
-            drawingEdge = null
-            drawCanvas(drawingEdge)
-        }
+    if(onCanvas && !event.shiftKey && !event.ctrlKey) {
+        drawingEdge = null
+        drawCanvas(drawingEdge)
     }
 }
 
 document.body.onkeydown = function (event) {
-    if(onCanvas) {
-        if(event.shiftKey && graph.selectedVertice != null) {
-            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my))
+    if(onCanvas && graph.selectedVertice != null) {
+        if(event.shiftKey) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), false)
+            drawCanvas(drawingEdge)
+        }else if(event.ctrlKey) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), true)
             drawCanvas(drawingEdge)
         }
     }

@@ -12,9 +12,11 @@
     <body>
         <div class="board">
             <div class="panel">
-                <a class="btn btn-danger" onclick="graph.clear()">Limpar grafo</a>
-                <div class="flex-grow-1"></div>
-                <h3>Criação de Grafos</h3>
+                <div class="flex-row">
+                    <a class="btn btn-primary">Importar grafo</a>
+                    <a class="btn btn-primary">Exportar grafo</a>
+                    <a class="btn btn-danger" onclick="graph.clear()">Limpar grafo</a>
+                </div>
                 <div class="flex-grow-1"></div>
                 <a class="btn btn-success" onclick="console.log(btoa(JSON.stringify(graph)))">Continuar</a>
             </div>
@@ -51,12 +53,28 @@
                         <p>Deleta uma aresta entre dois vértices</p>
                     </div>
                     <div class="info">
+                        <span class="key">&nbsp;&nbsp;Crtl&nbsp;&nbsp;</span>
+                        <p>+</p>
+                        <span class="key">
+                            <svg viewBox="0 0 1080 1350"><path fill="white" d="M539,203.646c-117.475,0-213,95.572-213,213.047v246.613c0,117.475,95.525,213.047,213,213.047s213-95.572,213-213.047  V416.693C752,299.219,656.475,203.646,539,203.646z M730,663.307c0,105.388-85.613,191.126-191,191.126s-191-85.738-191-191.126V533  h382V663.307z M730,511H549V225.846c101,5.357,181,88.908,181,190.848V511z"/></svg>
+                        </span>
+                        <p>Cria uma aresta direcionada entre dois vértices</p>
+                    </div>
+                    <div class="info">
+                        <span class="key">&nbsp;&nbsp;Crtl&nbsp;&nbsp;</span>
+                        <p>+</p>
+                        <span class="key">
+                            <svg viewBox="0 0 1080 1350"><path fill="white" d="M326,416.693v246.613c0,117.475,95.525,213.047,213,213.047s213-95.572,213-213.047V416.693  c0-117.475-95.525-213.047-213-213.047S326,299.219,326,416.693z M348,533h382v130.307c0,105.388-85.613,191.126-191,191.126  s-191-85.738-191-191.126V533z M348,416.693c0-101.939,80-185.49,181-190.848V511H348V416.693z"/></svg>
+                        </span>
+                        <p>Deleta uma aresta direcionada entre dois vértices</p>
+                    </div>
+                    <div class="info">
                         <span class="key">+</span>
-                        <p>Aumenta o valor do vertice selecionado</p>
+                        <p>Aumenta o valor do vértice selecionado</p>
                     </div>
                     <div class="info">
                         <span class="key">-</span>
-                        <p>Diminui o valor do vertice selecionado</p>
+                        <p>Diminui o valor do vértice selecionado</p>
                     </div>
                     <div class="info">
                         <span class="key">S</span>

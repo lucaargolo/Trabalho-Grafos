@@ -4,13 +4,36 @@ function clearCanvas() {
     context.fill()
 }
 
-function drawEdge(edge) {
+function drawEdge(edge, dotted) {
     context.strokeStyle = "#D6FFFC"
+    if(dotted) {
+        context.setLineDash([5, 8])
+    }
     context.beginPath()
     context.moveTo(edge.vertice1.x, edge.vertice1.y)
     context.lineTo(edge.vertice2.x, edge.vertice2.y)
+    if(edge.directed) {
+        let length = 18
+
+        let x = edge.vertice2.x
+        let y = edge.vertice2.y
+
+        if(!dotted) {
+            let distance = Math.sqrt((edge.vertice2.x - edge.vertice1.x) * (edge.vertice2.x - edge.vertice1.x) + (edge.vertice2.y - edge.vertice1.y) * (edge.vertice2.y - edge.vertice1.y))
+            let p = (verticeSize / 2) / distance
+            x = edge.vertice1.x * p + edge.vertice2.x * (1 - p)
+            y = edge.vertice1.y * p + edge.vertice2.y * (1 - p)
+        }
+
+        let angle = Math.atan2(y - edge.vertice1.y, x - edge.vertice1.x);
+        context.moveTo(x, y);
+        context.lineTo(x - length * Math.cos(angle - Math.PI / 6), y - length * Math.sin(angle - Math.PI / 6));
+        context.moveTo(x, y);
+        context.lineTo(x - length * Math.cos(angle + Math.PI / 6), y - length * Math.sin(angle + Math.PI / 6));
+    }
     context.closePath()
     context.stroke()
+    context.setLineDash([])
 }
 
 function drawVertice(vertice) {
@@ -40,12 +63,10 @@ function drawCanvas(drawingEdge) {
     context.lineWidth = 3
     clearCanvas()
     if(drawingEdge != null) {
-        context.setLineDash([5, 8])
-        drawEdge(drawingEdge)
-        context.setLineDash([])
+        drawEdge(drawingEdge, true)
     }
     graph.edges.forEach((edge) => {
-        drawEdge(edge)
+        drawEdge(edge, false)
     })
     graph.vertices.forEach((vertice) => {
         drawVertice(vertice)
