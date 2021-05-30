@@ -4,7 +4,7 @@ let onCanvas = false
 let mx = 0
 let my = 0
 
-let graph = decodeGraph("OTsxMTMuMzI4MTI1OzE0MTswOzM2Ny4zMjgxMjU7MTY0OzA7MjgxLjMyODEyNTs0NDE7MDsxNDkuMzI4MTI1OzI5NDswOzQxOC4zMjgxMjU7MzE2OzA7NTAzLjMyODEyNTs0NTc7MDs1MzcuMzI4MTI1OzIyMTswOzM1Mi4zMjgxMjU7Mjg7MDsyMi4zMjgxMjU7MzIzOzA7MTA7MzsyOzA7Mzs0OzA7MzsxOzA7MzswOzA7MTs0OzA7NTs0OzA7Njs1OzA7Nzs2OzA7ODswOzA7ODsyOzA7MDsy", drawCanvas)
+let graph = new Graph(drawCanvas)
 let draggingVertice = null
 let drawingEdge = null
 
@@ -62,30 +62,34 @@ document.body.oncontextmenu = function (event) {
 document.body.onmousedown = function (event) {
     if(onCanvas) {
         let vertice = graph.getVertice(mx, my)
+        let edge = graph.getEdge(mx, my)
         if(event.button === 0) {
             if (event.shiftKey) {
                 if (vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
-                    graph.addEdge(new Edge(graph.selectedVertice, vertice, false))
+                    let edge = new Edge(graph.selectedVertice, vertice, false)
+                    graph.addEdge(edge)
+                    graph.selectedEdge = edge
+                    graph.selectedVertice = null
                 }
             } else if(event.ctrlKey) {
                 if (vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
-                    graph.addEdge(new Edge(graph.selectedVertice, vertice, true))
+                    let edge = new Edge(graph.selectedVertice, vertice, true)
+                    graph.addEdge(edge)
+                    graph.selectedEdge = edge
+                    graph.selectedVertice = null
                 }
             } else {
                 draggingVertice = vertice
                 graph.selectedVertice = vertice
+                if(vertice === null) {
+                    graph.selectedEdge = edge
+                }else{
+                    graph.selectedEdge = null
+                }
             }
         }else if(event.button === 2) {
-            if (event.shiftKey || event.ctrlKey) {
-                if(vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
-                    let edge = graph.getEdge(graph.selectedVertice, vertice)
-                    if(edge != null) {
-                        graph.removeEdge(edge)
-                    }
-                }
-            } else {
-                graph.removeVertice(vertice)
-            }
+            graph.removeEdge(edge)
+            graph.removeVertice(vertice)
         }
         drawCanvas(drawingEdge)
     }
@@ -96,11 +100,12 @@ document.body.onmouseup = function (event) {
         if(event.button === 0) {
             if(draggingVertice != null) {
                 draggingVertice = null
-            }else if (graph.getVertice(mx, my) == null) {
+            }else if (graph.selectedEdge == null && graph.getVertice(mx, my) == null) {
                 let vertice = new Vertice(mx, my)
                 let created = graph.addVertice(vertice)
                 if(created) {
                     graph.selectedVertice = vertice
+                    graph.selectedEdge = null
                 }
             }
         }
@@ -109,43 +114,52 @@ document.body.onmouseup = function (event) {
 }
 
 document.body.onkeyup = function (event) {
-    if (graph.selectedVertice != null) {
-        switch (event.key) {
-            case '+':
+    switch (event.key) {
+        case '+':
+            if(graph.selectedVertice !== null) {
                 graph.selectedVertice.value++
-                break
-            case '-':
+            }else if(graph.selectedEdge !== null) {
+                graph.selectedEdge.value++
+            }
+            break
+        case '-':
+            if(graph.selectedVertice !== null) {
                 graph.selectedVertice.value--
-                break
-            case 's':
-                if(graph.selectedVertice === graph.endVertice) {
+            }else if(graph.selectedEdge !== null) {
+                graph.selectedEdge.value--
+            }
+            break
+        case 's':
+            if(graph.selectedVertice !== null) {
+                if (graph.selectedVertice === graph.endVertice) {
                     graph.endVertice = graph.startVertice
                     graph.startVertice = graph.selectedVertice
-                }else if(graph.selectedVertice === graph.startVertice) {
+                } else if (graph.selectedVertice === graph.startVertice) {
                     graph.startVertice = null
-                }else{
+                } else {
                     graph.startVertice = graph.selectedVertice
                 }
-                break
-            case 'e':
-                if(graph.selectedVertice === graph.startVertice) {
+            }
+            break
+        case 'e':
+            if(graph.selectedVertice !== null) {
+                if (graph.selectedVertice === graph.startVertice) {
                     graph.startVertice = graph.endVertice
                     graph.endVertice = graph.selectedVertice
-                }else if(graph.selectedVertice === graph.endVertice) {
+                } else if (graph.selectedVertice === graph.endVertice) {
                     graph.endVertice = null
-                }else{
+                } else {
                     graph.endVertice = graph.selectedVertice
                 }
-                break
-            default:
-                break
-        }
-        drawCanvas(drawingEdge)
+            }
+            break
+        default:
+            break
     }
     if(onCanvas && !event.shiftKey && !event.ctrlKey) {
         drawingEdge = null
-        drawCanvas(drawingEdge)
     }
+    drawCanvas(drawingEdge)
 }
 
 document.body.onkeydown = function (event) {

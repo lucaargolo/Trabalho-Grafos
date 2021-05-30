@@ -34,6 +34,21 @@ function drawEdge(edge, dotted) {
     context.closePath()
     context.stroke()
     context.setLineDash([])
+    if(!dotted) {
+        context.fillStyle = "#FFFFFF"
+        context.fillText(edge.value, (edge.vertice1.x + edge.vertice2.x) / 2, (edge.vertice1.y + edge.vertice2.y) / 2)
+        context.strokeStyle = "#000000"
+        context.lineWidth = 1
+        context.strokeText(edge.value, (edge.vertice1.x + edge.vertice2.x) / 2, (edge.vertice1.y + edge.vertice2.y) / 2)
+        context.lineWidth = 3
+    }
+    if(edge === graph.selectedEdge) {
+        context.beginPath()
+        context.ellipse((edge.vertice1.x + edge.vertice2.x)/2, (edge.vertice1.y + edge.vertice2.y)/2, edge.getDistance()/2, verticeSize/2, edge.getAngle(), 0, 2*Math.PI)
+        context.closePath()
+        context.strokeStyle = "#058ED9"
+        context.stroke()
+    }
 }
 
 function drawVertice(vertice) {
@@ -48,19 +63,23 @@ function drawVertice(vertice) {
     context.arc(vertice.x, vertice.y, verticeSize/2, 0, 2*Math.PI)
     context.closePath()
     context.fill()
-    context.fillStyle = "#D6FFFC"
-    context.font = "16px sans-serif"
-    context.textAlign = "center"
-    context.textBaseline = "middle"
+    context.fillStyle = "#FFFFFF"
     context.fillText(vertice.value, vertice.x, vertice.y)
+    context.strokeStyle = "#000000"
+    context.lineWidth = 1
+    context.strokeText(vertice.value, vertice.x, vertice.y)
+    context.lineWidth = 3
     if(vertice === graph.selectedVertice) {
-        context.strokeStyle = "#D6FFFC"
+        context.strokeStyle = "#058ED9"
         context.stroke()
     }
 }
 
 function drawCanvas(drawingEdge) {
     context.lineWidth = 3
+    context.font = "24px sans-serif"
+    context.textAlign = "center"
+    context.textBaseline = "middle"
     clearCanvas()
     if(drawingEdge != null) {
         drawEdge(drawingEdge, true)
