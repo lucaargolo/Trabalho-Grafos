@@ -37,6 +37,7 @@ body {
     background-color: #11262C;
     border: 5px solid #11262C;
     border-radius: 5px;
+    max-width: 32vw;
 }
 
 .board .instructions .info {
@@ -63,4 +64,9 @@ body {
     min-width: 40px;
     width: fit-content;
     height: 40px;
+}
+
+.preview {
+    width: 150px;
+    height: 150px;
 }
