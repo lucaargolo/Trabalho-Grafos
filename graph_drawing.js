@@ -36,11 +36,13 @@ function drawVertice(vertice) {
     }
 }
 
-function drawCanvas() {
+function drawCanvas(drawingEdge) {
     context.lineWidth = 3
     clearCanvas()
     if(drawingEdge != null) {
+        context.setLineDash([5, 8])
         drawEdge(drawingEdge)
+        context.setLineDash([])
     }
     graph.edges.forEach((edge) => {
         drawEdge(edge)

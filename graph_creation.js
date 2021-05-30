@@ -1,6 +1,8 @@
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 let onCanvas = false
+let mx = 0
+let my = 0
 
 const graph = new Graph(drawCanvas)
 let draggingVertice = null
@@ -10,21 +12,23 @@ document.body.onmousemove = function (event) {
     let rect = canvas.getBoundingClientRect();
     if(event.x >= rect.left && event.x <= rect.right && event.y >= rect.top && event.y <= rect.bottom) {
         onCanvas = true
+        mx = event.x - rect.left
+        my = event.y - rect.top
         if(draggingVertice != null) {
             let backupX = draggingVertice.x
             let backupY = draggingVertice.y
-            draggingVertice.x = event.x - rect.left
-            draggingVertice.y = event.y - rect.top
+            draggingVertice.x = mx
+            draggingVertice.y = my
             if(graph.isVerticeColliding(draggingVertice)) {
                 draggingVertice.x = backupX
                 draggingVertice.y = backupY
             }
-        }else if(graph.selectedVertice != null && event.shiftKey) {
-            drawingEdge = new Edge(graph.selectedVertice, new Vertice(event.x - rect.left, event.y - rect.top))
-        }else{
-            drawingEdge = null
+        }else if(graph.selectedVertice != null && drawingEdge != null) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my))
         }
-        drawCanvas()
+        drawCanvas(drawingEdge)
+    }else{
+        onCanvas = false
     }
 }
 
@@ -36,13 +40,11 @@ document.body.oncontextmenu = function (event) {
 
 document.body.onmousedown = function (event) {
     if(onCanvas) {
-        let rect = canvas.getBoundingClientRect();
-        let vertice = graph.getVertice(event.x - rect.left, event.y - rect.top)
+        let vertice = graph.getVertice(mx, my)
         if(event.button === 0) {
             if (event.shiftKey) {
                 if (vertice != null && graph.selectedVertice != null && vertice !== graph.selectedVertice) {
                     graph.addEdge(new Edge(graph.selectedVertice, vertice))
-                    drawingEdge = null
                 }
             } else {
                 draggingVertice = vertice
@@ -60,29 +62,28 @@ document.body.onmousedown = function (event) {
                 graph.removeVertice(vertice)
             }
         }
-        drawCanvas()
+        drawCanvas(drawingEdge)
     }
 }
 
 document.body.onmouseup = function (event) {
     if(onCanvas) {
-        let rect = canvas.getBoundingClientRect();
         if(event.button === 0) {
             if(draggingVertice != null) {
                 draggingVertice = null
-            }else if (graph.getVertice(event.x - rect.left, event.y - rect.top) == null) {
-                let vertice = new Vertice(event.x - rect.left, event.y - rect.top)
+            }else if (graph.getVertice(mx, my) == null) {
+                let vertice = new Vertice(mx, my)
                 let created = graph.addVertice(vertice)
                 if(created) {
                     graph.selectedVertice = vertice
                 }
             }
         }
-        drawCanvas()
+        drawCanvas(drawingEdge)
     }
 }
 
-document.body.onkeypress = function (event) {
+document.body.onkeyup = function (event) {
     if (graph.selectedVertice != null) {
         switch (event.key) {
             case '+':
@@ -114,8 +115,23 @@ document.body.onkeypress = function (event) {
             default:
                 break
         }
-        drawCanvas()
+        drawCanvas(drawingEdge)
+    }
+    if(onCanvas) {
+        if(!event.shiftKey) {
+            drawingEdge = null
+            drawCanvas(drawingEdge)
+        }
     }
 }
 
-drawCanvas()
+document.body.onkeydown = function (event) {
+    if(onCanvas) {
+        if(event.shiftKey && graph.selectedVertice != null) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my))
+            drawCanvas(drawingEdge)
+        }
+    }
+}
+
+drawCanvas(drawingEdge)

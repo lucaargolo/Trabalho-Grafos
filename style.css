@@ -38,3 +38,29 @@ body {
     border: 5px solid #11262C;
     border-radius: 5px;
 }
+
+.board .instructions .info {
+    display: flex;
+    margin: 10px 0 10px 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.board .instructions .info p {
+    margin: auto 0 auto 0;
+}
+
+.board .instructions .info .key{
+    display: block;
+    padding: 5px;
+    margin: 0 10px 0 10px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    border: 1px solid #FFFFFF;
+    border-radius: 5px;
+    color: white;
+    min-width: 40px;
+    width: fit-content;
+    height: 40px;
+}
