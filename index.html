@@ -13,12 +13,12 @@
         <div class="board">
             <div class="panel">
                 <div class="flex-row">
-                    <a class="btn btn-primary">Importar grafo</a>
-                    <a class="btn btn-primary">Exportar grafo</a>
+                    <a class="btn btn-primary" onclick="importGraph()">Importar grafo</a>
+                    <a class="btn btn-primary" onclick="exportGraph()">Exportar grafo</a>
                     <a class="btn btn-danger" onclick="graph.clear()">Limpar grafo</a>
                 </div>
                 <div class="flex-grow-1"></div>
-                <a class="btn btn-success" onclick="console.log(btoa(JSON.stringify(graph)))">Continuar</a>
+                <a class="btn btn-success">Continuar</a>
             </div>
             <div class="center">
                 <canvas id="canvas" width="600" height="600"></canvas>

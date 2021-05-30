@@ -127,3 +127,47 @@ class Graph {
         }
     }
 }
+
+function encodeGraph(graph) {
+    let encodedGraph = ""
+    encodedGraph += graph.vertices.length + ";"
+    graph.vertices.forEach((v) => {
+        encodedGraph += v.x + ";" + v.y + ";" + v.value + ";"
+    })
+    encodedGraph += graph.edges.length + ";"
+    graph.edges.forEach((e) => {
+        encodedGraph += graph.vertices.indexOf(e.vertice1) + ";" + graph.vertices.indexOf(e.vertice2) + ";" + (e.directed ? 1 : 0) + ";"
+    })
+    encodedGraph += graph.vertices.indexOf(graph.startVertice) + ";"
+    encodedGraph += graph.vertices.indexOf(graph.endVertice)
+    return btoa(encodedGraph)
+}
+
+function decodeGraph(base64, onUpdate) {
+    let decodedGraph = new Graph(onUpdate)
+    let encodedGraph = atob(base64).split(";")
+    let verticesLength = encodedGraph[0]
+    for(let x = 0; x < verticesLength; x++) {
+        let vertice = new Vertice(encodedGraph[(x*3)+1], encodedGraph[(x*3)+2])
+        vertice.value = encodedGraph[(x*3)+3]
+        decodedGraph.vertices.push(vertice)
+    }
+    let edgesLength = encodedGraph[(verticesLength*3)+1]
+    for(let x = 0; x < edgesLength; x++) {
+        let v1 = decodedGraph.vertices[encodedGraph[(verticesLength*3)+1+(x*3)+1]]
+        let v2 = decodedGraph.vertices[encodedGraph[(verticesLength*3)+1+(x*3)+2]]
+        let d = encodedGraph[(verticesLength*3)+1+(x*3)+3] === "1"
+        let edge = new Edge(v1, v2, d)
+        decodedGraph.edges.push(edge)
+    }
+    let start = encodedGraph[(verticesLength*3)+1+(edgesLength*3)+1]
+    if(start >= 0) {
+        decodedGraph.startVertice = decodedGraph.vertices[start]
+    }
+    let end = encodedGraph[(verticesLength*3)+1+(edgesLength*3)+2]
+    if(end >= 0) {
+        decodedGraph.endVertice = decodedGraph.vertices[end]
+    }
+    decodedGraph.onUpdate = onUpdate
+    return decodedGraph
+}

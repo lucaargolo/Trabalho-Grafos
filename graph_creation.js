@@ -4,9 +4,30 @@ let onCanvas = false
 let mx = 0
 let my = 0
 
-const graph = new Graph(drawCanvas)
+let graph = decodeGraph("OTsxMTMuMzI4MTI1OzE0MTswOzM2Ny4zMjgxMjU7MTY0OzA7MjgxLjMyODEyNTs0NDE7MDsxNDkuMzI4MTI1OzI5NDswOzQxOC4zMjgxMjU7MzE2OzA7NTAzLjMyODEyNTs0NTc7MDs1MzcuMzI4MTI1OzIyMTswOzM1Mi4zMjgxMjU7Mjg7MDsyMi4zMjgxMjU7MzIzOzA7MTA7MzsyOzA7Mzs0OzA7MzsxOzA7MzswOzA7MTs0OzA7NTs0OzA7Njs1OzA7Nzs2OzA7ODswOzA7ODsyOzA7MDsy", drawCanvas)
 let draggingVertice = null
 let drawingEdge = null
+
+function importGraph() {
+    navigator.clipboard.readText()
+        .then(text => {
+            graph = decodeGraph(text, drawCanvas)
+            drawCanvas(drawingEdge)
+        })
+        .catch(err => {
+
+        })
+}
+
+function exportGraph() {
+    navigator.clipboard.writeText(encodeGraph(graph))
+        .then(r => {
+
+        })
+        .catch(err => {
+
+        })
+}
 
 document.body.onmousemove = function (event) {
     let rect = canvas.getBoundingClientRect();
