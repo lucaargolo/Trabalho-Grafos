@@ -15,7 +15,9 @@ Link de acesso a ferramenta: https://lucaargolo.github.io/trabalho-grafos
 ## Autor
 
 Nome: Luca Assis Argolo
+
 Matrícula: 219116049
+
 Algorítmo: Dijkstra's algorithm 
 
 ## Trabalho
