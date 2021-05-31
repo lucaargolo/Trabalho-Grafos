@@ -66,14 +66,15 @@ function dijkstra(graph, source) {
 }
 
 dijkstra(graph, graph.startVertice)
-console.log("A menor distância entre o vértice de início e o de fim é de: "+dist.get(graph.endVertice))
-let str = ""
+
+const result = document.getElementById("result")
+result.innerText += "A menor distância entre o vértice de início e o de fim é de: "+dist.get(graph.endVertice)
+result.innerText += "\n"
 let e = graph.endVertice
 while(e != null) {
-    str += "("+e.x+", "+e.y+")"
+    result.innerText += "("+e.x+", "+e.y+")"
     if(prev.get(e) != null) {
-        str += " <- "
+        result.innerText += " <- "
     }
     e = prev.get(e)
 }
-console.log(str)
