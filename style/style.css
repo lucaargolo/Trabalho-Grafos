@@ -29,6 +29,8 @@ body {
 }
 
 .board canvas {
+    width: 600px;
+    height: 600px;
     margin: 10px;
     background-color: #11262C;
     border: 5px solid #11262C;
@@ -36,12 +38,13 @@ body {
 }
 
 .board .instructions {
+    width: 600px;
+    height: 600px;
     margin: 10px;
     padding: 10px;
     background-color: #11262C;
     border: 5px solid #11262C;
     border-radius: 5px;
-    max-width: 32vw;
 }
 
 .board .instructions .info {
@@ -71,12 +74,11 @@ body {
 }
 
 .preview {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
 }
 
 .code {
     font-family: "Lucida Console", monospace;
     white-space: break-spaces;
-    width: 32vw;
 }
