@@ -113,8 +113,11 @@ document.body.onmousedown = function (event) {
                 }
             }
         }else if(event.button === 2) {
-            graph.removeEdge(edge)
-            graph.removeVertice(vertice)
+            if(vertice !== null) {
+                graph.removeVertice(vertice)
+            }else{
+                graph.removeEdge(edge)
+            }
         }
         drawCanvas(drawingEdge)
     }
