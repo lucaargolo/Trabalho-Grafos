@@ -9,66 +9,42 @@ const graph = decodeGraph(encoded_graph, drawCanvas)
 drawCanvas()
 
 const pseudocode = document.getElementById("pseudocode")
+pseudocode.innerText = algorithms[algorithm].pseudocode
 
-const startBtn = document.getElementById("startBtn")
-const nextStepBtn = document.getElementById("nextStepBtn")
+//Constantes globais utilizadas para executar os algorítmos
+const dist = new Map()
+const prev = new Map()
 
-const stepSpeedRange = document.getElementById("stepSpeed")
-const stepByStepCheckbox = document.getElementById("stepByStep")
+//Variáveis globais utilizadas para vizualizar a execução dos algoritmos
+let probedVertices = []
+let probingVertice = null
+let probedEdges = []
+let probingEdge = null
 
-const speedDisplay = document.getElementById("speedDisplay")
-
-stepByStepCheckbox.onchange = function () {
-    if(stepByStepCheckbox.checked) {
-        stepSpeedRange.disabled = true
-        startBtn.classList.add("disabled")
-        nextStepBtn.classList.remove("disabled")
-    }else{
-        stepSpeedRange.disabled = false
-        startBtn.classList.remove("disabled")
-        nextStepBtn.classList.add("disabled")
-    }
-}
-
-stepSpeedRange.onchange = function () {
-    speedDisplay.innerText = stepSpeedRange.value*10 + "ms"
-}
-
-pseudocode.innerText = ` 
-=>  1  function Dijkstra(Graph, source):
-    2
-    3      create vertex set Q
-    4
-    5      for each vertex v in Graph:            
-    6          dist[v] ← INFINITY                 
-    7          prev[v] ← UNDEFINED                
-    8          add v to Q                     
-    9      dist[source] ← 0                       
-   10     
-   11      while Q is not empty:
-   12          u ← vertex in Q with min dist[u]   
-   13                                             
-   14          remove u from Q
-   15         
-   16          for each neighbor v of u:
-   17              alt ← dist[u] + length(u, v)
-   18              if alt < dist[v]:              
-   19                  dist[v] ← alt
-   20                  prev[v] ← u
-   21
-   22      return dist[], prev[]
-`
-
+//Varíavel global utilizada para pausar a execução do algoritmo
 let blockingSteps = false
 
-function resetState() {
-    dist.clear()
-    prev.clear()
-    Q = []
-    u = null
-    alt = null
-    probedEdges = []
-    probingEdge = null
+function startVisualization() {
+    const result = document.getElementById("result")
+    result.innerText = ""
+    drawCanvas()
+    let bl = startBtn.classList.contains("disabled")
+    if(!bl) {
+        startBtn.classList.add("disabled")
+    }
+    stepByStepCheckbox.disabled = true
+    if(stepByStepCheckbox.checked) {
+        blockingSteps = true
+    }
+    algorithms[algorithm].run(graph, graph.startVertice)
+        .then((res) => {
+            result.innerText = res
+            stepByStepCheckbox.disabled = false
+            if(!bl) {
+                startBtn.classList.remove("disabled")
+            }
+            resetState()
+        })
 }
 
 function nextStep() {
@@ -77,93 +53,6 @@ function nextStep() {
     }else{
         startVisualization()
     }
-}
-
-function startVisualization() {
-    const result = document.getElementById("result")
-    result.innerText = ""
-    drawCanvas()
-    stepByStepCheckbox.disabled = true
-    if(stepByStepCheckbox.checked) {
-        blockingSteps = true
-    }
-    dijkstra(graph, graph.startVertice)
-        .then(() => {
-            result.innerText += "A menor distância entre o vértice de início e o de fim é de: " + dist.get(graph.endVertice)
-            result.innerText += "\n"
-            let e = graph.endVertice
-            while (e != null) {
-                result.innerText += "(" + e.x + ", " + e.y + ")"
-                if (prev.get(e) != null) {
-                    result.innerText += " <- "
-                }
-                e = prev.get(e)
-            }
-            stepByStepCheckbox.disabled = false
-            resetState()
-        })
-}
-
-const dist = new Map()
-const prev = new Map()
-let Q = []
-let u = null
-let alt = null
-let probedEdges = []
-let probingEdge = null
-
-const sleep = (milliseconds) => {
-    return new Promise(resolve => {
-        setTimeout(resolve, milliseconds)
-    })
-}
-
-async function dijkstra(graph, source) {
-
-    Q = []
-    await nextInstruction(3)
-
-    for(let v of graph.vertices) {
-        await nextInstruction(5)
-        dist.set(v, Number.POSITIVE_INFINITY)
-        await nextInstruction(6)
-        prev.set(v, null)
-        await nextInstruction(7)
-        Q.push(v)
-        await nextInstruction(8)
-    }
-
-    dist.set(source, 0)
-    await nextInstruction(9)
-
-    while (Q.length > 0) {
-        await nextInstruction(11)
-
-        u = Q.sort((a, b) => dist.get(a) - dist.get(b))[0]
-        await nextInstruction(12)
-
-        Q.splice(Q.indexOf(u), 1)
-        await nextInstruction(14)
-
-        for(let [v, distance] of graph.getNeighbors(u)) {
-            await nextInstruction(16)
-            probingEdge = graph.getEdgeFromVertices(u, v)
-            probedEdges.push(probingEdge)
-            alt = dist.get(u) + distance
-            await nextInstruction(17)
-            if(alt < dist.get(v)) {
-                await nextInstruction(18)
-                dist.set(v, alt)
-                await nextInstruction(19)
-                prev.set(v, u)
-                await nextInstruction(20)
-            }
-            probingEdge = null
-        }
-        u = null
-    }
-
-    await nextInstruction(22)
 }
 
 async function nextInstruction(line) {
@@ -182,6 +71,21 @@ async function nextInstruction(line) {
     }
 }
 
+function resetState() {
+    dist.clear()
+    prev.clear()
+    probedEdges = []
+    probingEdge = null
+    probedVertices = []
+    probingVertice = null
+}
+
+const sleep = (milliseconds) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds)
+    })
+}
+
 function drawVisualizationCanvas() {
     context.lineWidth = 3
     context.font = "24px sans-serif"
@@ -198,9 +102,9 @@ function drawVisualizationCanvas() {
         }
     })
     graph.vertices.forEach((vertice) => {
-        if(vertice === u) {
+        if(vertice === probingVertice) {
             drawVertice(vertice, "#FF0000")
-        }else if(dist.has(vertice) && Q.indexOf(vertice) === -1) {
+        }else if(probedVertices.indexOf(vertice) !== -1) {
             drawVertice(vertice, "#00FF00")
         }else{
             drawVertice(vertice)

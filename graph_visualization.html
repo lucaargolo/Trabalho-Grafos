@@ -15,7 +15,7 @@
             <div class="panel">
                 <div class="flex-row">
                     <a class="btn btn-success" id="startBtn" onclick="startVisualization()">Iniciar vizualização</a>
-                    <label for="stepSpeed" class="form-check-label">Velocidade</label>
+                    <label for="stepSpeed" class="form-check-label">Tempo entre instruções</label>
                     <input type="range" class="form-range align-text-top w-auto" id="stepSpeed">
                     <a id="speedDisplay">500ms</a>
                 </div>
@@ -41,8 +41,35 @@
         </div>
     </body>
 
+    <script src="scripts/algorithms.js"></script>
     <script src="scripts/graph.js"></script>
     <script src="scripts/graph_drawing.js"></script>
     <script src="scripts/graph_visualization.js"></script>
+
+    <script>
+        const startBtn = document.getElementById("startBtn")
+        const nextStepBtn = document.getElementById("nextStepBtn")
+
+        const stepSpeedRange = document.getElementById("stepSpeed")
+        const stepByStepCheckbox = document.getElementById("stepByStep")
+
+        const speedDisplay = document.getElementById("speedDisplay")
+
+        stepByStepCheckbox.onchange = function () {
+            if(stepByStepCheckbox.checked) {
+                stepSpeedRange.disabled = true
+                startBtn.classList.add("disabled")
+                nextStepBtn.classList.remove("disabled")
+            }else{
+                stepSpeedRange.disabled = false
+                startBtn.classList.remove("disabled")
+                nextStepBtn.classList.add("disabled")
+            }
+        }
+
+        stepSpeedRange.onchange = function () {
+            speedDisplay.innerText = stepSpeedRange.value*10 + "ms"
+        }
+    </script>
 
 </html>
