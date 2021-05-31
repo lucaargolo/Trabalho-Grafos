@@ -1,3 +1,6 @@
+const url = new URL(window.location.href);
+const algorithm = url.searchParams.get("algorithm")
+
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 let onCanvas = false
@@ -27,6 +30,10 @@ function exportGraph() {
         .catch(err => {
 
         })
+}
+
+function goToVisualization() {
+    window.location = "graph_visualization.html?algorithm="+algorithm+"&graph="+encodeGraph(graph)
 }
 
 document.body.onmousemove = function (event) {

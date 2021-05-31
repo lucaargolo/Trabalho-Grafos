@@ -19,11 +19,11 @@
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et mauris nunc. Quisque turpis arcu, ullamcorper non nisi eget, tincidunt lacinia urna. Fusce eget nibh sem. Suspendisse eleifend mi eu lectus ornare ullamcorper. Curabitur at ante tempor, lacinia eros non, maximus neque. Morbi sed malesuada quam. Nam tristique tristique est a sollicitudin. Nullam tempus eu justo vitae aliquet. Nullam mattis, magna id viverra congue, leo turpis tristique urna, a semper purus augue eu nisi.</p>
             </div>
             <div class="instructions">
-                <form>
+                <form id="form">
                     <div class="form-group">
                         <label for="algorithm">Selecione o algorítmo que deseja utilizar:</label>
                         <select class="form-control" id="algorithm">
-                            <option>Dijkstra's algorithm</option>
+                            <option value="dijkstra">Dijkstra's algorithm</option>
                         </select>
                     </div>
                     <p></p>
@@ -61,5 +61,25 @@
         </div>
     </div>
 </body>
+
+<script>
+    const algorithm = document.getElementById("algorithm")
+    const form = document.getElementById("form");
+    const graphs = {
+        "graph1": "",
+        "graph2": "",
+        "graph3": ""
+    }
+
+    form.onsubmit = function (event) {
+        event.preventDefault()
+        if(form["graph"].value === "create_graph") {
+            window.location = "graph_creation.html?algorithm="+algorithm.value
+        }else{
+            window.location = "graph_visualization.html?algorithm="+algorithm.value+"&graph="+graphs[form["graph"].value]
+        }
+    }
+
+</script>
 
 </html>

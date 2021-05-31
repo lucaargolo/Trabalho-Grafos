@@ -70,3 +70,9 @@ body {
     width: 150px;
     height: 150px;
 }
+
+.visualization {
+    font-family: "Lucida Console", monospace;
+    white-space: break-spaces;
+    width: 32vw;
+}

@@ -66,6 +66,22 @@ class Graph {
         this.onUpdate()
     }
 
+    getNeighbors(vertice) {
+        let neighbors = new Map()
+        this.edges.forEach((e) => {
+            if(e.directed && vertice === e.vertice1) {
+                neighbors.set(e.vertice2, e.value)
+            }else if(!e.directed) {
+                if(vertice === e.vertice1) {
+                    neighbors.set(e.vertice2, e.value)
+                }else if(vertice === e.vertice2) {
+                    neighbors.set(e.vertice1, e.value)
+                }
+            }
+        })
+        return neighbors
+    }
+
     getVertice(x, y) {
         let vertice = null
         this.vertices.forEach((v) => {
@@ -123,17 +139,6 @@ class Graph {
         return edge
     }
 
-    getEdgeFromVertices(vertice1, vertice2) {
-        let edge = null
-        let equalEdge = new Edge(vertice1, vertice2)
-        this.edges.forEach((e) => {
-            if(e.isEqual(equalEdge)) {
-                edge = e
-            }
-        })
-        return edge
-    }
-
     addEdge(edge) {
         let colliding = false
         this.edges.forEach((e) => {
@@ -176,8 +181,8 @@ function decodeGraph(base64, onUpdate) {
     let encodedGraph = atob(base64).split(";")
     let verticesLength = encodedGraph[0]
     for(let x = 0; x < verticesLength; x++) {
-        let vertice = new Vertice(encodedGraph[(x*3)+1], encodedGraph[(x*3)+2])
-        vertice.value = encodedGraph[(x*3)+3]
+        let vertice = new Vertice(Number.parseFloat(encodedGraph[(x*3)+1]), Number.parseFloat(encodedGraph[(x*3)+2]))
+        vertice.value = Number.parseInt(encodedGraph[(x*3)+3])
         decodedGraph.vertices.push(vertice)
     }
     let edgesLength = encodedGraph[(verticesLength*3)+1]
@@ -186,7 +191,7 @@ function decodeGraph(base64, onUpdate) {
         let v2 = decodedGraph.vertices[encodedGraph[(verticesLength*3)+1+(x*4)+2]]
         let d = encodedGraph[(verticesLength*3)+1+(x*4)+3] === "1"
         let edge = new Edge(v1, v2, d)
-        edge.value = encodedGraph[(verticesLength*3)+1+(x*4)+4]
+        edge.value = Number.parseInt(encodedGraph[(verticesLength*3)+1+(x*4)+4])
         decodedGraph.edges.push(edge)
     }
     let start = encodedGraph[(verticesLength*3)+1+(edgesLength*4)+1]
