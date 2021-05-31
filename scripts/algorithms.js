@@ -90,7 +90,12 @@ class Dijkstra {
 
     verify(graph) {
         if(graph.startVertice === null) {
-            return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio"
+            return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio."
+        }
+        for(let edge of graph.edges) {
+            if(edge.value < 0) {
+                return "Para executar o algorítmo é necessário que todas as arestas possuam valor positivo."
+            }
         }
         return null
     }
