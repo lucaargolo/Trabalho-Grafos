@@ -72,17 +72,27 @@ class Dijkstra {
 
         await nextInstruction(22)
 
-        let result = "A menor distância entre o vértice de início e o de fim é de: " + dist.get(graph.endVertice)
-        result += "\n"
-        let e = graph.endVertice
-        while (e != null) {
-            result += "(" + e.x + ", " + e.y + ")"
-            if (prev.get(e) != null) {
-                result += " <- "
+        let result = ""
+        if(graph.endVertice !== null) {
+            result = "A menor distância entre o vértice de início e o de fim é de: " + dist.get(graph.endVertice)
+            result += "\n"
+            let e = graph.endVertice
+            while (e != null) {
+                result += "(" + e.x + ", " + e.y + ")"
+                if (prev.get(e) != null) {
+                    result += " <- "
+                }
+                e = prev.get(e)
             }
-            e = prev.get(e)
         }
         return result
+    }
+
+    verify(graph) {
+        if(graph.startVertice === null) {
+            return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio"
+        }
+        return null
     }
 
 }

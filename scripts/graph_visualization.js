@@ -24,6 +24,10 @@ let probingEdge = null
 //Varíavel global utilizada para pausar a execução do algoritmo
 let blockingSteps = false
 
+function goToCreation() {
+    window.location = "graph_creation.html?algorithm="+algorithm+"&graph="+encoded_graph
+}
+
 function startVisualization() {
     const result = document.getElementById("result")
     result.innerText = ""

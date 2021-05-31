@@ -1,40 +1,58 @@
 const url = new URL(window.location.href);
 const algorithm = url.searchParams.get("algorithm")
+const encoded_graph = url.searchParams.get("graph");
 
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
-let onCanvas = false
-let mx = 0
-let my = 0
 
 let graph = new Graph(drawCanvas)
-let draggingVertice = null
-let drawingEdge = null
+if(encoded_graph != null) {
+    try {
+        graph = decodeGraph(encoded_graph, drawCanvas)
+    }catch (err) {
+        console.error(err.message)
+    }
+}
 
 function importGraph() {
     navigator.clipboard.readText()
         .then(text => {
             graph = decodeGraph(text, drawCanvas)
             drawCanvas(drawingEdge)
+            alert("Grafo da área de transferência importado com sucesso!")
         })
         .catch(err => {
-
+            alert("Houve um erro ao importar o grafo da área de transferência. Certifique-se de que sua área de transferência possui de fato um grafo.")
+            console.error(err.message)
         })
 }
 
 function exportGraph() {
     navigator.clipboard.writeText(encodeGraph(graph))
-        .then(r => {
-
+        .then(() => {
+            alert("Grafo exportado para a área de transferência com sucesso!")
         })
         .catch(err => {
-
+            alert("Houve um erro ao exportar o grafo para a área de transferência. Certifique-se de que o site possuí permissão para efetuar essa ação.")
+            console.error(err.message)
         })
 }
 
 function goToVisualization() {
-    window.location = "graph_visualization.html?algorithm="+algorithm+"&graph="+encodeGraph(graph)
+    let v = algorithms[algorithm].verify(graph)
+    if(v !== null) {
+        alert(v)
+    }else {
+        window.location = "graph_visualization.html?algorithm=" + algorithm + "&graph=" + encodeGraph(graph)
+    }
 }
+
+let onCanvas = false
+let mx = 0
+let my = 0
+
+let draggingVertice = null
+let drawingEdge = null
 
 document.body.onmousemove = function (event) {
     let rect = canvas.getBoundingClientRect();
