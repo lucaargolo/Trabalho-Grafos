@@ -4,8 +4,12 @@ function clearCanvas() {
     context.fill()
 }
 
-function drawEdge(edge, dotted) {
-    context.strokeStyle = "#D6FFFC"
+function drawEdge(edge, dotted, overridingColor) {
+    if(overridingColor != null) {
+        context.strokeStyle = overridingColor
+    }else{
+        context.strokeStyle = "#D6FFFC"
+    }
     if(dotted) {
         context.setLineDash([5, 8])
     }
@@ -51,8 +55,10 @@ function drawEdge(edge, dotted) {
     }
 }
 
-function drawVertice(vertice) {
-    if(vertice === graph.startVertice) {
+function drawVertice(vertice, overridingColor) {
+    if(overridingColor != null) {
+        context.fillStyle = overridingColor
+    }else if(vertice === graph.startVertice) {
         context.fillStyle = "#FFE66D"
     }else if(vertice === graph.endVertice) {
         context.fillStyle = "#FF6B6B"

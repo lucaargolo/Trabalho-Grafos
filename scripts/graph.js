@@ -139,6 +139,16 @@ class Graph {
         return edge
     }
 
+    getEdgeFromVertices(vertice1, vertice2) {
+        let edge = null
+        this.edges.forEach((e) => {
+            if((e.directed && e.vertice1 === vertice1 && e.vertice2 === vertice2) || (!e.directed && ((e.vertice1 === vertice1 && e.vertice2 === vertice2) || e.vertice1 === vertice2 && e.vertice2 === vertice1)) ) {
+                edge = e
+            }
+        })
+        return edge
+    }
+
     addEdge(edge) {
         let colliding = false
         this.edges.forEach((e) => {

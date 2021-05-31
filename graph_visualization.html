@@ -14,15 +14,23 @@
         <div class="board">
             <div class="panel">
                 <div class="flex-row">
-                    <a class="btn btn-success">Iniciar vizualização</a>
-                    <a class="btn btn-primary disabled">Passo Anterior</a>
-                    <a class="btn btn-primary disabled">Passo Seguinte</a>
+                    <a class="btn btn-success" id="startBtn" onclick="startVisualization()">Iniciar vizualização</a>
+                    <label for="stepSpeed" class="form-check-label">Velocidade</label>
+                    <input type="range" class="form-range align-text-top w-auto" id="stepSpeed">
+                    <a id="speedDisplay">500ms</a>
                 </div>
+                <div class="flex-grow-1"></div>
+                <div class="flex-row">
+                    <input class="form-check-input align-text-top" type="checkbox" value="" id="stepByStep">
+                    <label class="form-check-label" for="stepByStep">Passo por passo</label>
+                    <a class="btn btn-primary disabled" id="nextStepBtn" onclick="nextStep()">Passo Seguinte</a>
+                </div>
+
             </div>
             <div class="center">
                 <canvas id="canvas" width="600" height="600"></canvas>
                 <div class="instructions">
-                    <p class="visualization" id="visualization"></p>
+                    <p class="code" id="pseudocode"></p>
                 </div>
             </div>
             <div class="panel">
