@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: graph_visualization.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: graph_visualization.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Valores globais e funções variadas para a visualização de algorítmos em grafos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
+
+/**
+ * Constante global referente ao mapa que será usada para salvar a distância de um vértice qualquer ao vértice de início.
+ * @type {Map&lt;Vertice, number>}
+ */
+const dist = new Map()
+
+/**
+ * Constante global referente ao mapa que será usado para salvar um vértice anterior a outro vértice qualquer.
+ * @type {Map&lt;Vertice, Vertice>}
+ */
+const prev = new Map()
+
+/**
+ * Variável global referente ao array de vértices que já foram analizados pelo algorítmo.
+ * @type {Vertice[]}
+ */
+let probedVertices = []
+
+/**
+ * Variável global contendo o vértice que está sendo analizado.
+ * @type {Vertice|null}
+ */
+let probingVertice = null
+
+/**
+ * Variável global referente ao array de arestas que já foram analizados pelo algorítmo.
+ * @type {Edge[]}
+ */
+let probedEdges = []
+
+/**
+ * Variável global contendo a aresta que está sendo analizada.
+ * @type {Edge|null}
+ */
+let probingEdge = null
+
+/**
+ * Varíavel global utilizada que bloqueia a execução do programa.
+ * @type {boolean}
+ */
+let blockingSteps = false
+
+/**
+ * Inicia a visualização do algorítmo.
+ */
+function startVisualization() {
+    const result = document.getElementById("result")
+    result.innerText = ""
+    drawCanvas()
+    let bl = startBtn.classList.contains("disabled")
+    if(!bl) {
+        startBtn.classList.add("disabled")
+    }
+    stepByStepCheckbox.disabled = true
+    if(stepByStepCheckbox.checked) {
+        blockingSteps = true
+    }
+    algorithms[algorithm].run(graph, graph.startVertice)
+        .then((res) => {
+            result.innerText = res
+            stepByStepCheckbox.disabled = false
+            if(!bl) {
+                startBtn.classList.remove("disabled")
+            }
+            resetState()
+        })
+}
+
+/**
+ * Desbloqueia a execução do programa.
+ */
+function nextStep() {
+    if(stepByStepCheckbox.disabled) {
+        blockingSteps = false
+    }else{
+        startVisualization()
+    }
+}
+
+/**
+ * Altera a instrução do pseudocódigo e bloqueia a visualização do algorítmo, por um tempo ou até o usuário pressionar o botão "Passo Seguinte".
+ * @param {number} line Linha da instrução do pseudocódigo.
+ * @return {Promise&lt;void>} Promise que bloqueia a visualização do algorítmo.
+ */
+async function nextInstruction(line) {
+    pseudocode.innerText = pseudocode.innerText.replace("=>", "  ")
+    pseudocode.innerText = pseudocode.innerText.replace("   "+line, "=> "+line)
+    if(blockingSteps) {
+        while (blockingSteps) {
+            await sleep(50)
+        }
+    }else{
+        await sleep(stepSpeedRange.value*10)
+    }
+    drawVisualizationCanvas()
+    if(stepByStepCheckbox.checked) {
+        blockingSteps = true
+    }
+}
+
+/**
+ * Reseta o estado da visualização.
+ */
+function resetState() {
+    dist.clear()
+    prev.clear()
+    probedEdges = []
+    probingEdge = null
+    probedVertices = []
+    probingVertice = null
+}
+
+/**
+ * Bloqueia a vizualização do algorítmo por uma quantidade específica de tempo.
+ * @param {number} milliseconds Quantidade de milisegundos que o algorítmo ficará bloqueado.
+ * @return {Promise&lt;void>} Promise que bloqueia a visualização do algorítmo.
+ */
+const sleep = (milliseconds) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds)
+    })
+}
+
+/**
+ * Limpa o canvas, renderiza todos os elementos do grafo nele e depois renderiza todos os elementos da visualização do algorítmo.
+ */
+function drawVisualizationCanvas() {
+    context.lineWidth = 3
+    context.font = "24px sans-serif"
+    context.textAlign = "center"
+    context.textBaseline = "middle"
+    clearCanvas()
+    graph.edges.forEach((edge) => {
+        if(edge === probingEdge) {
+            drawEdge(edge, false, "#FF0000")
+        }else if(probedEdges.indexOf(edge) !== -1) {
+            drawEdge(edge, false, "#00FF00")
+        }else{
+            drawEdge(edge, false)
+        }
+    })
+    graph.vertices.forEach((vertice) => {
+        if(vertice === probingVertice) {
+            drawVertice(vertice, "#FF0000")
+        }else if(probedVertices.indexOf(vertice) !== -1) {
+            drawVertice(vertice, "#00FF00")
+        }else{
+            drawVertice(vertice)
+        }
+    })
+    context.font = "16px sans-serif"
+    context.fillStyle = "#FF0000"
+    dist.forEach((dist, vertice) => {
+        let str = ""
+        if(vertice === graph.startVertice) {
+            str += "source, "
+        }else if(vertice === graph.endVertice) {
+            str += "destination, "
+        }
+        str += dist
+        context.fillText(str, vertice.x, vertice.y - verticeSize/2 - 5)
+    })
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Dijkstra.html">Dijkstra</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Vertice.html">Vertice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#algorithm">algorithm</a></li><li><a href="global.html#algorithms">algorithms</a></li><li><a href="global.html#blockingSteps">blockingSteps</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#context">context</a></li><li><a href="global.html#decodeGraph">decodeGraph</a></li><li><a href="global.html#dist">dist</a></li><li><a href="global.html#draggingVertice">draggingVertice</a></li><li><a href="global.html#drawCanvas">drawCanvas</a></li><li><a href="global.html#drawEdge">drawEdge</a></li><li><a href="global.html#drawingEdge">drawingEdge</a></li><li><a href="global.html#drawVertice">drawVertice</a></li><li><a href="global.html#drawVisualizationCanvas">drawVisualizationCanvas</a></li><li><a href="global.html#encoded_graph">encoded_graph</a></li><li><a href="global.html#encodeGraph">encodeGraph</a></li><li><a href="global.html#exportGraph">exportGraph</a></li><li><a href="global.html#graph">graph</a></li><li><a href="global.html#importGraph">importGraph</a></li><li><a href="global.html#mx">mx</a></li><li><a href="global.html#my">my</a></li><li><a href="global.html#nextInstruction">nextInstruction</a></li><li><a href="global.html#nextStep">nextStep</a></li><li><a href="global.html#onCanvas">onCanvas</a></li><li><a href="global.html#prev">prev</a></li><li><a href="global.html#probedEdges">probedEdges</a></li><li><a href="global.html#probedVertices">probedVertices</a></li><li><a href="global.html#probingEdge">probingEdge</a></li><li><a href="global.html#probingVertice">probingVertice</a></li><li><a href="global.html#resetState">resetState</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html#startVisualization">startVisualization</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#verticeSize">verticeSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 31 2021 23:30:35 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

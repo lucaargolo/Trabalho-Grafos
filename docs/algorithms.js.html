@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: algorithms.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: algorithms.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Implementação dos algorítmos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
+
+/** @class Dijkstra
+ *  @classdesc Implementação do algorítmo de Dijkstra e validação dos grafos
+ */
+class Dijkstra {
+
+    /**
+     * Pseudocódigo para visualização do passo a passo do algorítmo
+     * @type {string}
+     */
+    pseudocode = ` 
+=>  1  function Dijkstra(Graph, source):
+    2
+    3      create vertex set Q
+    4
+    5      for each vertex v in Graph:            
+    6          dist[v] ← INFINITY                 
+    7          prev[v] ← UNDEFINED                
+    8          add v to Q                     
+    9      dist[source] ← 0                       
+   10     
+   11      while Q is not empty:
+   12          u ← vertex in Q with min dist[u]   
+   13                                             
+   14          remove u from Q
+   15         
+   16          for each neighbor v of u:
+   17              alt ← dist[u] + length(u, v)
+   18              if alt &lt; dist[v]:              
+   19                  dist[v] ← alt
+   20                  prev[v] ← u
+   21
+   22      return dist[], prev[]
+`
+    /**
+     *  Roda o algorítmo no grafo
+     *  @param {Graph} graph Grafo no qual o algorítmo será executado
+     *  @param {Vertice} source Vértice de início do grafo
+     *  @return {string} Retorna resultado escrito do algorítmo
+     */
+    async run(graph, source) {
+
+        let Q = []
+        await nextInstruction(3)
+
+        for(let v of graph.vertices) {
+            await nextInstruction(5)
+            dist.set(v, Number.POSITIVE_INFINITY)
+            await nextInstruction(6)
+            prev.set(v, null)
+            await nextInstruction(7)
+            Q.push(v)
+            await nextInstruction(8)
+        }
+
+        dist.set(source, 0)
+        await nextInstruction(9)
+
+        while (Q.length > 0) {
+            await nextInstruction(11)
+
+            let u = Q.sort((a, b) => dist.get(a) - dist.get(b))[0]
+            probingVertice = u
+            probedVertices.push(probingVertice)
+            await nextInstruction(12)
+
+            Q.splice(Q.indexOf(u), 1)
+            await nextInstruction(14)
+
+            for(let [v, distance] of graph.getNeighbors(u)) {
+                await nextInstruction(16)
+                probingEdge = graph.getEdgeFromVertices(u, v)
+                probedEdges.push(probingEdge)
+                let alt = dist.get(u) + distance
+                await nextInstruction(17)
+                if(alt &lt; dist.get(v)) {
+                    await nextInstruction(18)
+                    dist.set(v, alt)
+                    await nextInstruction(19)
+                    prev.set(v, u)
+                    await nextInstruction(20)
+                }
+                probingEdge = null
+            }
+            probingVertice = null
+        }
+
+        await nextInstruction(22)
+
+        let result = ""
+        if(graph.endVertice !== null) {
+            result = "A menor distância entre o vértice de início e o de fim é de: " + dist.get(graph.endVertice)
+            result += "\n"
+            let e = graph.endVertice
+            while (e != null) {
+                result += "(" + e.x + ", " + e.y + ")"
+                if (prev.get(e) != null) {
+                    result += " &lt;- "
+                }
+                e = prev.get(e)
+            }
+        }
+        return result
+    }
+
+    /**
+     *  Roda o algorítmo no grafo
+     *  @param {Graph} graph Grafo que será validado
+     *  @return {string|null} String com erro de validação, ou null caso o grafo seja validado com sucesso
+     */
+    verify(graph) {
+        if(graph.startVertice === null) {
+            return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio."
+        }
+        for(let edge of graph.edges) {
+            if(edge.value &lt; 0) {
+                return "Para executar o algorítmo é necessário que todas as arestas possuam valor positivo."
+            }
+        }
+        return null
+    }
+
+}
+
+/**
+ * Objeto contendo todos os algorítmos implementados no programa
+ * @type {{dijkstra: Dijkstra}}
+ */
+const algorithms = {
+    "dijkstra": new Dijkstra()
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Dijkstra.html">Dijkstra</a></li><li><a href="Edge.html">Edge</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Vertice.html">Vertice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#algorithm">algorithm</a></li><li><a href="global.html#algorithms">algorithms</a></li><li><a href="global.html#blockingSteps">blockingSteps</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#clearCanvas">clearCanvas</a></li><li><a href="global.html#context">context</a></li><li><a href="global.html#decodeGraph">decodeGraph</a></li><li><a href="global.html#dist">dist</a></li><li><a href="global.html#draggingVertice">draggingVertice</a></li><li><a href="global.html#drawCanvas">drawCanvas</a></li><li><a href="global.html#drawEdge">drawEdge</a></li><li><a href="global.html#drawingEdge">drawingEdge</a></li><li><a href="global.html#drawVertice">drawVertice</a></li><li><a href="global.html#drawVisualizationCanvas">drawVisualizationCanvas</a></li><li><a href="global.html#encoded_graph">encoded_graph</a></li><li><a href="global.html#encodeGraph">encodeGraph</a></li><li><a href="global.html#exportGraph">exportGraph</a></li><li><a href="global.html#graph">graph</a></li><li><a href="global.html#importGraph">importGraph</a></li><li><a href="global.html#mx">mx</a></li><li><a href="global.html#my">my</a></li><li><a href="global.html#nextInstruction">nextInstruction</a></li><li><a href="global.html#nextStep">nextStep</a></li><li><a href="global.html#onCanvas">onCanvas</a></li><li><a href="global.html#prev">prev</a></li><li><a href="global.html#probedEdges">probedEdges</a></li><li><a href="global.html#probedVertices">probedVertices</a></li><li><a href="global.html#probingEdge">probingEdge</a></li><li><a href="global.html#probingVertice">probingVertice</a></li><li><a href="global.html#resetState">resetState</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html#startVisualization">startVisualization</a></li><li><a href="global.html#url">url</a></li><li><a href="global.html#verticeSize">verticeSize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 31 2021 23:30:35 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
