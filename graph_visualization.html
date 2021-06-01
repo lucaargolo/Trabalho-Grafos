@@ -48,6 +48,7 @@
     <script src="scripts/algorithms.js"></script>
     <script src="scripts/graph.js"></script>
     <script src="scripts/graph_drawing.js"></script>
+    <script src="scripts/graph_common.js"></script>
     <script src="scripts/graph_visualization.js"></script>
 
     <script>
@@ -58,6 +59,9 @@
         const stepByStepCheckbox = document.getElementById("stepByStep")
 
         const speedDisplay = document.getElementById("speedDisplay")
+
+        const pseudocode = document.getElementById("pseudocode")
+        pseudocode.innerText = algorithms[algorithm].pseudocode
 
         stepByStepCheckbox.onchange = function () {
             if(stepByStepCheckbox.checked) {
@@ -73,6 +77,10 @@
 
         stepSpeedRange.onchange = function () {
             speedDisplay.innerText = stepSpeedRange.value*10 + "ms"
+        }
+
+        function goToCreation() {
+            window.location = "graph_creation.html?algorithm="+algorithm+"&graph="+encoded_graph
         }
     </script>
 

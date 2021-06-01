@@ -1,9 +1,35 @@
+/**
+ * @file Valores globais e funções variadas para a renderização de grafos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
+
+/**
+ * Referência global ao elemento do canvas no HTML.
+ * @type {HTMLCanvasElement}
+ */
+const canvas = document.getElementById("canvas");
+
+/**
+ * Referência global ao contexto de renderização em 2d do canvas.
+ * @type {CanvasRenderingContext2D}
+ */
+const context = canvas.getContext("2d");
+
+/**
+ * Limpa o canvas.
+ */
 function clearCanvas() {
     context.fillStyle = "#11262C"
     context.rect(0, 0, canvas.width, canvas.height)
     context.fill()
 }
 
+/**
+ * Desenha uma aresta qualquer no canvas.
+ * @param {Edge} edge Aresta que será desenhada.
+ * @param {boolean} dotted Aresta será pontilhada ou não.
+ * @param {string} [overridingColor] Cor que irá sobrepor a cor original da aresta.
+ */
 function drawEdge(edge, dotted, overridingColor) {
     if(overridingColor != null) {
         context.strokeStyle = overridingColor
@@ -55,6 +81,11 @@ function drawEdge(edge, dotted, overridingColor) {
     }
 }
 
+/**
+ * Desenha um vértice qualquer no canvas.
+ * @param {Vertice} vertice Vértice que será desenhado.
+ * @param {string} [overridingColor] Cor que irá sobrepor a cor original do vértice.
+ */
 function drawVertice(vertice, overridingColor) {
     if(overridingColor != null) {
         context.fillStyle = overridingColor
@@ -81,6 +112,10 @@ function drawVertice(vertice, overridingColor) {
     }
 }
 
+/**
+ * Limpa o canvas e renderiza todos os elementos do grafo nele.
+ * @param {Edge} [drawingEdge] Aresta que está sendo construída.
+ */
 function drawCanvas(drawingEdge) {
     context.lineWidth = 3
     context.font = "24px sans-serif"

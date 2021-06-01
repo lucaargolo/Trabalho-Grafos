@@ -1,33 +1,53 @@
-const url = new URL(window.location.href);
-const algorithm = url.searchParams.get("algorithm")
-const encoded_graph = url.searchParams.get("graph");
+/**
+ * @file Valores globais e funções variadas para a visualização de algorítmos em grafos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
 
-const canvas = document.getElementById("canvas");
-const context = canvas.getContext("2d");
-
-const graph = decodeGraph(encoded_graph, drawCanvas)
-drawCanvas()
-
-const pseudocode = document.getElementById("pseudocode")
-pseudocode.innerText = algorithms[algorithm].pseudocode
-
-//Constantes globais utilizadas para executar os algorítmos
+/**
+ * Constante global referente ao mapa que será usada para salvar a distância de um vértice qualquer ao vértice de início.
+ * @type {Map<Vertice, number>}
+ */
 const dist = new Map()
+
+/**
+ * Constante global referente ao mapa que será usado para salvar um vértice anterior a outro vértice qualquer.
+ * @type {Map<Vertice, Vertice>}
+ */
 const prev = new Map()
 
-//Variáveis globais utilizadas para vizualizar a execução dos algoritmos
+/**
+ * Variável global referente ao array de vértices que já foram analizados pelo algorítmo.
+ * @type {Vertice[]}
+ */
 let probedVertices = []
+
+/**
+ * Variável global contendo o vértice que está sendo analizado.
+ * @type {Vertice|null}
+ */
 let probingVertice = null
+
+/**
+ * Variável global referente ao array de arestas que já foram analizados pelo algorítmo.
+ * @type {Edge[]}
+ */
 let probedEdges = []
+
+/**
+ * Variável global contendo a aresta que está sendo analizada.
+ * @type {Edge|null}
+ */
 let probingEdge = null
 
-//Varíavel global utilizada para pausar a execução do algoritmo
+/**
+ * Varíavel global utilizada que bloqueia a execução do programa.
+ * @type {boolean}
+ */
 let blockingSteps = false
 
-function goToCreation() {
-    window.location = "graph_creation.html?algorithm="+algorithm+"&graph="+encoded_graph
-}
-
+/**
+ * Inicia a visualização do algorítmo.
+ */
 function startVisualization() {
     const result = document.getElementById("result")
     result.innerText = ""
@@ -51,6 +71,9 @@ function startVisualization() {
         })
 }
 
+/**
+ * Desbloqueia a execução do programa.
+ */
 function nextStep() {
     if(stepByStepCheckbox.disabled) {
         blockingSteps = false
@@ -59,6 +82,11 @@ function nextStep() {
     }
 }
 
+/**
+ * Altera a instrução do pseudocódigo e bloqueia a visualização do algorítmo, por um tempo ou até o usuário pressionar o botão "Passo Seguinte".
+ * @param {number} line Linha da instrução do pseudocódigo.
+ * @return {Promise<void>} Promise que bloqueia a visualização do algorítmo.
+ */
 async function nextInstruction(line) {
     pseudocode.innerText = pseudocode.innerText.replace("=>", "  ")
     pseudocode.innerText = pseudocode.innerText.replace("   "+line, "=> "+line)
@@ -75,6 +103,9 @@ async function nextInstruction(line) {
     }
 }
 
+/**
+ * Reseta o estado da visualização.
+ */
 function resetState() {
     dist.clear()
     prev.clear()
@@ -84,12 +115,20 @@ function resetState() {
     probingVertice = null
 }
 
+/**
+ * Bloqueia a vizualização do algorítmo por uma quantidade específica de tempo.
+ * @param {number} milliseconds Quantidade de milisegundos que o algorítmo ficará bloqueado.
+ * @return {Promise<void>} Promise que bloqueia a visualização do algorítmo.
+ */
 const sleep = (milliseconds) => {
     return new Promise(resolve => {
         setTimeout(resolve, milliseconds)
     })
 }
 
+/**
+ * Limpa o canvas, renderiza todos os elementos do grafo nele e depois renderiza todos os elementos da visualização do algorítmo.
+ */
 function drawVisualizationCanvas() {
     context.lineWidth = 3
     context.font = "24px sans-serif"

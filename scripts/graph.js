@@ -1,43 +1,101 @@
+/**
+ * @file Classes e valores utilizados para representação de grafos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
+
+/**
+ * Diámetro do vértice.
+ * @type {number}
+ */
 const verticeSize = 40
 
+/**
+ * @classdesc Representação de um vértice com peso.
+ */
 class Vertice {
+
+    /**
+     * Cria um novo vértice com peso 0.
+     * @param {number} x Coordenada X do vértice.
+     * @param {number} y Coordenada Y do vértice.
+     */
     constructor(x, y) {
         this.x = x;
         this.y = y;
         this.value = 0
     }
 
+    /**
+     * Verifica se um outro vértice qualquer está colidindo com esse vértice.
+     * @param {Vertice} vertice Vértice que será verificado.
+     * @return {boolean} Vértice está colidindo ou não com esse vértice.
+     */
     isColliding(vertice) {
         let distSq = (this.x - vertice.x) * (this.x - vertice.x) + (this.y - vertice.y) * (this.y - vertice.y);
         let radSumSq = verticeSize * verticeSize;
         return (distSq !== radSumSq && distSq <= radSumSq)
     }
 
+    /**
+     * Verifica se um ponto (x, y) está dentro desse vértice.
+     * @param {number} x Coordenada X do plano.
+     * @param {number} y Coordenada Y do plano.
+     * @return {boolean} Ponto está dentro ou não desse vértice.
+     */
     isPointInside(x, y) {
         return (x - this.x)*(x - this.x) + (y - this.y)*(y - this.y) <= (verticeSize/2)*(verticeSize/2)
     }
 }
 
+/**
+ * @classdesc Representação de uma aresta qualquer com peso.
+ */
 class Edge {
+
+    /**
+     * Cria uma nova aresta entre dois vértices com peso 0.
+     * @param {Vertice} vertice1 Vértice de onde a aresta sai.
+     * @param {Vertice} vertice2 Vértice onde a aresta chega.
+     * @param {boolean} directed Aresta é direcionada ou não.
+     */
     constructor(vertice1, vertice2, directed) {
         this.vertice1 = vertice1
         this.vertice2 = vertice2
         this.value = 0
         this.directed = directed
     }
-    
+
+    /**
+     * Retorna o angulo dessa aresta.
+     * @return {number} Angulo dessa aresta.
+     */
     getAngle() {
         return Math.atan2(this.vertice2.y - this.vertice1.y, this.vertice2.x - this.vertice1.x)
     }
-    
+
+    /**
+     * Retorna a distância entre os dois vértices dessa aresta.
+     * @return {number} Distância entre os dois vértices dessa aresta.
+     */
     getDistance() {
         return Math.sqrt((this.vertice2.x - this.vertice1.x) * (this.vertice2.x - this.vertice1.x) + (this.vertice2.y - this.vertice1.y) * (this.vertice2.y - this.vertice1.y))
     }
 
+    /**
+     * Verifica se essa aresta é igual a outra aresta qualquer.
+     * @param {Edge} edge Aresta que será verificada.
+     * @return {boolean} As arestas são iguais ou não.
+     */
     isEqual(edge) {
         return (this.vertice1 === edge.vertice1 && this.vertice2 === edge.vertice2) || (this.vertice2 === edge.vertice1 && this.vertice1 === edge.vertice2)
     }
 
+    /**
+     * Verifica se um ponto (x, y) está dentro da elipse que engloba essa aresta.
+     * @param {number} x Coordenada X do plano.
+     * @param {number} y Coordenada Y do plano.
+     * @return {boolean} Ponto está dentro ou não da elipse.
+     */
     isPointInside(x, y) {
         let first = Math.pow(Math.cos(this.getAngle())*(x-((this.vertice1.x + this.vertice2.x)/2))+Math.sin(this.getAngle())*(y-((this.vertice1.y + this.vertice2.y)/2)), 2)/Math.pow(this.getDistance()/2, 2)
         let second = Math.pow(Math.sin(this.getAngle())*(x-((this.vertice1.x + this.vertice2.x)/2))-Math.cos(this.getAngle())*(y-((this.vertice1.y + this.vertice2.y)/2)), 2)/Math.pow(verticeSize/2, 2)
@@ -45,7 +103,15 @@ class Edge {
     }
 }
 
+/**
+ * @classdesc Representação de um grafo qualquer
+ */
 class Graph {
+
+    /**
+     * Cria uma novo grafo
+     * @param {function} onUpdate Função que é chamada quando o grafo sofre alterações
+     */
     constructor(onUpdate) {
         this.selectedVertice = null
         this.selectedEdge = null
@@ -56,6 +122,9 @@ class Graph {
         this.onUpdate = onUpdate
     }
 
+    /**
+     * Retorna o grafo ao seu estado inicial
+     */
     clear() {
         this.selectedVertice = null
         this.selectedEdge = null
@@ -66,6 +135,11 @@ class Graph {
         this.onUpdate()
     }
 
+    /**
+     * Retorna todos os vizinhos de um vértice do grafo e o peso da aresta entre eles.
+     * @param {Vertice} vertice Vertice que terá seus vizinhos retornados.
+     * @return {Map<Vertice, number>} Mapa com (vizinho) -> (peso da aresta)
+     */
     getNeighbors(vertice) {
         let neighbors = new Map()
         this.edges.forEach((e) => {
@@ -82,6 +156,12 @@ class Graph {
         return neighbors
     }
 
+    /**
+     * Retorna um vértice presente nas coordenadas (x, y) ou null caso não exista vértice no local.
+     * @param {number} x Coordenada X do plano.
+     * @param {number} y Coordenada Y do plano.
+     * @return {Vertice|null} Vértice nas coordenadas ou nulo caso não exista vértice no local.
+     */
     getVertice(x, y) {
         let vertice = null
         this.vertices.forEach((v) => {
@@ -93,6 +173,11 @@ class Graph {
         return vertice
     }
 
+    /**
+     * Adiciona um vértice ao grafo e retorna se a operação foi concluída com sucesso ou não.
+     * @param {Vertice} vertice Vértice que será adicionado ao grafo.
+     * @return {boolean} Operação foi concluida com sucesso ou não.
+     */
     addVertice(vertice) {
         let colliding = this.isVerticeColliding(vertice)
         if(!colliding) {
@@ -102,6 +187,10 @@ class Graph {
         return !colliding
     }
 
+    /**
+     * Remove um vértice do grafo e todas as arestas ligadas ao mesmo.
+     * @param {Vertice} vertice Vértice que será removido do grafo.
+     */
     removeVertice(vertice) {
         const index = this.vertices.indexOf(vertice);
         if (index > -1) {
@@ -118,6 +207,11 @@ class Graph {
         }
     }
 
+    /**
+     * Verifica se um vértice qualquer está colidindo com qualquer outro vértice do grafo.
+     * @param {Vertice} vertice Vértice que será testado para colisão.
+     * @return {boolean} O vértice colide com outro vértice ou não.
+     */
     isVerticeColliding(vertice) {
         let colliding = false
         this.vertices.forEach((v) => {
@@ -128,6 +222,12 @@ class Graph {
         return colliding
     }
 
+    /**
+     * Retorna uma aresta presente nas coordenadas (x, y) ou null caso não exista aresta no local.
+     * @param {number} x Coordenada X no plano.
+     * @param {number} y Coordenada Y no plano.
+     * @return {Edge|null} Aresta nas coordenadas ou nulo caso não exista aresta no local.
+     */
     getEdge(x, y) {
         let edge = null
         this.edges.forEach((e) => {
@@ -139,6 +239,12 @@ class Graph {
         return edge
     }
 
+    /**
+     * Retorna uma aresta ligando os dois vértices ou null caso não exista tal aresta.
+     * @param {Vertice} vertice1 Vértice de onde a aresta sai.
+     * @param {Vertice} vertice2 Vértice onde a aresta chega.
+     * @return {Edge|null} Aresta entre os vértices passados ou nulo caso não exista tal aresta.
+     */
     getEdgeFromVertices(vertice1, vertice2) {
         let edge = null
         this.edges.forEach((e) => {
@@ -149,6 +255,11 @@ class Graph {
         return edge
     }
 
+    /**
+     * Adiciona uma aresta ao grafo e retorna se a operação foi concluída com sucesso ou não.
+     * @param {Edge} edge Aresta que será adicionada ao grafo.
+     * @return {boolean} Operação foi concluida com sucesso ou não.
+     */
     addEdge(edge) {
         let colliding = false
         this.edges.forEach((e) => {
@@ -163,55 +274,14 @@ class Graph {
         return !colliding
     }
 
+    /**
+     * Remove uma aresta do grafo.
+     * @param {Edge} edge Aresta que será removida do grafo.
+     */
     removeEdge(edge) {
         const index = this.edges.indexOf(edge);
         if (index > -1) {
             this.edges.splice(index, 1);
         }
     }
-}
-
-function encodeGraph(graph) {
-    let encodedGraph = ""
-    encodedGraph += graph.vertices.length + ";"
-    graph.vertices.forEach((v) => {
-        encodedGraph += v.x + ";" + v.y + ";" + v.value + ";"
-    })
-    encodedGraph += graph.edges.length + ";"
-    graph.edges.forEach((e) => {
-        encodedGraph += graph.vertices.indexOf(e.vertice1) + ";" + graph.vertices.indexOf(e.vertice2) + ";" + (e.directed ? 1 : 0) + ";" + e.value + ";"
-    })
-    encodedGraph += graph.vertices.indexOf(graph.startVertice) + ";"
-    encodedGraph += graph.vertices.indexOf(graph.endVertice)
-    return btoa(encodedGraph)
-}
-
-function decodeGraph(base64, onUpdate) {
-    let decodedGraph = new Graph(onUpdate)
-    let encodedGraph = atob(base64).split(";")
-    let verticesLength = encodedGraph[0]
-    for(let x = 0; x < verticesLength; x++) {
-        let vertice = new Vertice(Number.parseFloat(encodedGraph[(x*3)+1]), Number.parseFloat(encodedGraph[(x*3)+2]))
-        vertice.value = Number.parseInt(encodedGraph[(x*3)+3])
-        decodedGraph.vertices.push(vertice)
-    }
-    let edgesLength = encodedGraph[(verticesLength*3)+1]
-    for(let x = 0; x < edgesLength; x++) {
-        let v1 = decodedGraph.vertices[encodedGraph[(verticesLength*3)+1+(x*4)+1]]
-        let v2 = decodedGraph.vertices[encodedGraph[(verticesLength*3)+1+(x*4)+2]]
-        let d = encodedGraph[(verticesLength*3)+1+(x*4)+3] === "1"
-        let edge = new Edge(v1, v2, d)
-        edge.value = Number.parseInt(encodedGraph[(verticesLength*3)+1+(x*4)+4])
-        decodedGraph.edges.push(edge)
-    }
-    let start = encodedGraph[(verticesLength*3)+1+(edgesLength*4)+1]
-    if(start >= 0) {
-        decodedGraph.startVertice = decodedGraph.vertices[start]
-    }
-    let end = encodedGraph[(verticesLength*3)+1+(edgesLength*4)+2]
-    if(end >= 0) {
-        decodedGraph.endVertice = decodedGraph.vertices[end]
-    }
-    decodedGraph.onUpdate = onUpdate
-    return decodedGraph
 }

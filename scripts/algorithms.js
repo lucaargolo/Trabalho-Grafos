@@ -1,4 +1,17 @@
+/**
+ * @file Implementação dos algorítmos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
+
+/** @class Dijkstra
+ *  @classdesc Implementação do algorítmo de Dijkstra e validação dos grafos
+ */
 class Dijkstra {
+
+    /**
+     * Pseudocódigo para visualização do passo a passo do algorítmo
+     * @type {string}
+     */
     pseudocode = ` 
 =>  1  function Dijkstra(Graph, source):
     2
@@ -23,6 +36,12 @@ class Dijkstra {
    21
    22      return dist[], prev[]
 `
+    /**
+     *  Roda o algorítmo no grafo
+     *  @param {Graph} graph Grafo no qual o algorítmo será executado
+     *  @param {Vertice} source Vértice de início do grafo
+     *  @return {string} Retorna resultado escrito do algorítmo
+     */
     async run(graph, source) {
 
         let Q = []
@@ -88,6 +107,11 @@ class Dijkstra {
         return result
     }
 
+    /**
+     *  Roda o algorítmo no grafo
+     *  @param {Graph} graph Grafo que será validado
+     *  @return {string|null} String com erro de validação, ou null caso o grafo seja validado com sucesso
+     */
     verify(graph) {
         if(graph.startVertice === null) {
             return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio."
@@ -102,6 +126,10 @@ class Dijkstra {
 
 }
 
+/**
+ * Objeto contendo todos os algorítmos implementados no programa
+ * @type {{dijkstra: Dijkstra}}
+ */
 const algorithms = {
     "dijkstra": new Dijkstra()
 }

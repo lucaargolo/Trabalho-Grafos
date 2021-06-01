@@ -1,59 +1,42 @@
-const url = new URL(window.location.href);
-const algorithm = url.searchParams.get("algorithm")
-const encoded_graph = url.searchParams.get("graph");
+/**
+ * @file Valores globais e funções variadas para a criação de grafos.
+ * @author Luca Assis Argolo (luca.argolo@ufba.br)
+ */
 
-const canvas = document.getElementById("canvas");
-const context = canvas.getContext("2d");
-
-let graph = new Graph(drawCanvas)
-if(encoded_graph != null) {
-    try {
-        graph = decodeGraph(encoded_graph, drawCanvas)
-    }catch (err) {
-        console.error(err.message)
-    }
-}
-
-function importGraph() {
-    navigator.clipboard.readText()
-        .then(text => {
-            graph = decodeGraph(text, drawCanvas)
-            drawCanvas(drawingEdge)
-            alert("Grafo da área de transferência importado com sucesso!")
-        })
-        .catch(err => {
-            alert("Houve um erro ao importar o grafo da área de transferência. Certifique-se de que sua área de transferência possui de fato um grafo.")
-            console.error(err.message)
-        })
-}
-
-function exportGraph() {
-    navigator.clipboard.writeText(encodeGraph(graph))
-        .then(() => {
-            alert("Grafo exportado para a área de transferência com sucesso!")
-        })
-        .catch(err => {
-            alert("Houve um erro ao exportar o grafo para a área de transferência. Certifique-se de que o site possuí permissão para efetuar essa ação.")
-            console.error(err.message)
-        })
-}
-
-function goToVisualization() {
-    let v = algorithms[algorithm].verify(graph)
-    if(v !== null) {
-        alert(v)
-    }else {
-        window.location = "graph_visualization.html?algorithm=" + algorithm + "&graph=" + encodeGraph(graph)
-    }
-}
-
+/**
+ * Variável global que indica se o mouse do usuário está ou não no canvas.
+ * @type {boolean}
+ */
 let onCanvas = false
+
+/**
+ * Varíavel global que indica a coordenada X do mouse do usuário no canvas.
+ * @type {number}
+ */
 let mx = 0
+
+/**
+ * Varíavel global que indica a coordenada Y do mouse do usuário no canvas.
+ * @type {number}
+ */
 let my = 0
 
+/**
+ * Varíavel global que contém o vértice que está sendo arrastado, ou nulo caso não exista tal vértice.
+ * @type {Vertice|null}
+ */
 let draggingVertice = null
+
+/**
+ * Varíavel global que contém a aresta que está sendo construída, ou nulo caso não exista tal aresta.
+ * @type {null}
+ */
 let drawingEdge = null
 
+/**
+ * Função que executa toda a vez que o usuário movimentar o mouse.
+ * @listens onmousemove
+ */
 document.body.onmousemove = function (event) {
     let rect = canvas.getBoundingClientRect();
     if(event.x >= rect.left && event.x <= rect.right && event.y >= rect.top && event.y <= rect.bottom) {
@@ -78,12 +61,20 @@ document.body.onmousemove = function (event) {
     }
 }
 
+/**
+ * Função que executa toda a vez que o usuário tentar abrir o menu de contexto.
+ * @listens oncontextmenu
+ */
 document.body.oncontextmenu = function (event) {
     if(onCanvas) {
         event.preventDefault()
     }
 }
 
+/**
+ * Função que executa toda a vez que o usuário pressiona algum botão do mouse.
+ * @listens onmousedown
+ */
 document.body.onmousedown = function (event) {
     if(onCanvas) {
         let vertice = graph.getVertice(mx, my)
@@ -123,6 +114,10 @@ document.body.onmousedown = function (event) {
     }
 }
 
+/**
+ * Função que executa toda a vez que o usuário solta algum botão do mouse.
+ * @listens onmouseup
+ */
 document.body.onmouseup = function (event) {
     if(onCanvas) {
         if(event.button === 0) {
@@ -141,6 +136,26 @@ document.body.onmouseup = function (event) {
     }
 }
 
+/**
+ * Função que executa toda a vez que o usuário pressiona alguma tecla do teclado.
+ * @listens onkeydown
+ */
+document.body.onkeydown = function (event) {
+    if(onCanvas && graph.selectedVertice != null) {
+        if(event.shiftKey) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), false)
+            drawCanvas(drawingEdge)
+        }else if(event.ctrlKey) {
+            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), true)
+            drawCanvas(drawingEdge)
+        }
+    }
+}
+
+/**
+ * Função que executa toda a vez que o usuário solta alguma tecla do teclado.
+ * @listens onkeyup
+ */
 document.body.onkeyup = function (event) {
     switch (event.key) {
         case '+':
@@ -189,17 +204,3 @@ document.body.onkeyup = function (event) {
     }
     drawCanvas(drawingEdge)
 }
-
-document.body.onkeydown = function (event) {
-    if(onCanvas && graph.selectedVertice != null) {
-        if(event.shiftKey) {
-            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), false)
-            drawCanvas(drawingEdge)
-        }else if(event.ctrlKey) {
-            drawingEdge = new Edge(graph.selectedVertice, new Vertice(mx, my), true)
-            drawCanvas(drawingEdge)
-        }
-    }
-}
-
-drawCanvas(drawingEdge)
