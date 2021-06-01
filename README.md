@@ -5,12 +5,13 @@ Link de acesso a ferramenta: https://lucaargolo.github.io/trabalho-grafos
 ## Tabela de Conteúdos
 1. [Autor](#autor)
 2. [Trabalho](#trabalho)
-3. [Implementação](#implementação)
+3. [Dijkstra's algorithm](#dijkstras-algorithm)
+4. [Implementação](#implementação)
    1. [Processo de Desenvolvimento](#processo-de-desenvolvimento)
    2. [Recursos Disponíveis](#recursos-disponíveis)
    3. [Algorítmos](#algorítmos)
-4. [Dijkstra's algorithm](#dijkstras-algorithm)
-5. [Referências](#referências)
+5. [Documentação](#documentação)
+6. [Referências](#referências)
 
 ## Autor
 
@@ -23,6 +24,10 @@ Algorítmo: Dijkstra's algorithm
 ## Trabalho
 
 Proposto pela cordenação da disciplina MATA53, para execução durante o semestre 2021.1, esse trabalho consiste na implementação de uma ferramenta que permita a visualização de algorítmos em grafos, para atrair a atenção de pessas interessadas nesses assuntos.
+
+## Dijkstra's algorithm
+
+O algoritmo de Dijkstra, é um algorítmo simples que visa resolver o problema do caminho mais curto num grafo dirigido ou não dirigido com arestas de peso não negativo.
 
 ## Implementação
 
@@ -47,9 +52,11 @@ No momento atual o site possúi os seguintes algorítmos:
 
 - Dijkstra's algorithm
 
-## Dijkstra's algorithm
+## Documentação
 
-O algoritmo de Dijkstra, é um algorítmo simples que visa resolver o problema do caminho mais curto num grafo dirigido ou não dirigido com arestas de peso não negativo.
+Todo o código javascript do projeto foi documentado seguindo o padrão do **JSDoc**
+
+A página web com a documentação pode ser acessada em https://lucaargolo.github.io/trabalho-grafos/docs
 
 ## Referências
 
@@ -58,3 +65,4 @@ O algoritmo de Dijkstra, é um algorítmo simples que visa resolver o problema d
 - CSS: https://developer.mozilla.org/pt-BR/docs/Glossary/CSS
 - JavaScript: https://developer.mozilla.org/pt-BR/docs/Glossary/JavaScript 
 - Bootstrap: https://getbootstrap.com/docs/5.0/getting-started/introduction/
+- JSDoc: https://jsdoc.app/about-getting-started.html
