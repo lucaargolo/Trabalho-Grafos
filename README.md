@@ -1,4 +1,4 @@
-# MATA53 - Visualização de Algorítmos em Grafos
+# MATA53 - Visualização de Algoritmos em Grafos
 ![image](https://user-images.githubusercontent.com/49497195/120156745-a7eed800-c1c8-11eb-99ca-03c68c9f0d48.png)
 Link de acesso a ferramenta: https://lucaargolo.github.io/trabalho-grafos
 
@@ -13,7 +13,7 @@ Link de acesso a ferramenta: https://lucaargolo.github.io/trabalho-grafos
 7. [Implementação](#implementação)
    1. [Processo de Desenvolvimento](#processo-de-desenvolvimento)
    2. [Recursos](#recursos)
-   3. [Algorítmos](#algorítmos)
+   3. [Algoritmos](#algoritmos)
 8. [Documentação](#documentação)
 9. [Referências](#referências)
 
@@ -23,15 +23,15 @@ Nome: Luca Assis Argolo
 
 Matrícula: 219116049
 
-Algorítmo: Dijkstra's algorithm 
+Algoritmo: Dijkstra's algorithm 
 
 ## Trabalho
 
-Proposto pela cordenação da disciplina MATA53, para execução durante o semestre 2021.1, esse trabalho consiste na implementação de uma ferramenta que permita a visualização de algorítmos em grafos, para atrair a atenção de pessas interessadas nesses assuntos.
+Proposto pela cordenação da disciplina MATA53, para execução durante o semestre 2021.1, esse trabalho consiste na implementação de uma ferramenta que permita a visualização de algoritmos em grafos, para atrair a atenção de pessoas interessadas nesses assuntos.
 
 ## Dijkstra's algorithm
 
-O [algoritmo de Dijkstra](https://pt.wikipedia.org/wiki/Algoritmo_de_Dijkstra), é um algorítmo simples que visa resolver o [problema do caminho mais curto](https://pt.wikipedia.org/wiki/Problema_do_caminho_mais_curto) num grafo dirigido ou não dirigido com arestas de peso não negativo.
+O [algoritmo de Dijkstra](https://pt.wikipedia.org/wiki/Algoritmo_de_Dijkstra), é um algoritmo simples que visa resolver o [problema do caminho mais curto](https://pt.wikipedia.org/wiki/Problema_do_caminho_mais_curto) num grafo dirigido ou não dirigido com arestas de peso não negativo.
 
 Foi concebido pelo cientista da computação [Edsger W. Dijkstra](https://pt.wikipedia.org/wiki/Edsger_Dijkstra) em 1956 e publicado 3 anos depois.
 
@@ -72,7 +72,7 @@ Para executar o programa na sua maquina, basta clonar o repositório e abrir o a
 
 ### Uso
 
-Para efetuar o uso do programa, o usuário deverá escolher o algorítmo que quer visualizar e escolher se quer utilizar um grafo predefinido para a visualização, ou quer criar o próprio grafo. Após escolher a opção desejada clicar em "Continuar".
+Para efetuar o uso do programa, o usuário deverá escolher o algoritmo que quer visualizar e escolher se quer utilizar um grafo predefinido para a visualização, ou quer criar o próprio grafo. Após escolher a opção desejada clicar em "Continuar".
 
 #### 1. Criando o próprio grafo
 
@@ -80,13 +80,13 @@ Caso o usuário decida criar o próprio grafo, ele irá ser redirecionado a pág
 
 Após finalizar sua criação, o usuário deverá clicar em "Continuar" e caso haja algum problema de validação, o site informará o erro e o usuário terá que concertá-lo para poder prosseguir. Caso não haja nenhum erro o usuário será redirecionado para a página de visualização.
 
-#### 2. Visualizando o algorítmo escolhido no grafo
+#### 2. Visualizando o algoritmo escolhido no grafo
 
 Dentro da página de visualização o usuário tem 2 opções. Ou ele irá clicar em "Iniciar Visualização", o que irar dar play na visualização até o final dela, ou ele poderá selecionar a opção "Passo a Passo", e executar a visualização operação por operação.
 
 ## Implementação
 
-Neste repositório está contido um site para visualização de algorítmos em grafos.
+Neste repositório está contido um site para visualização de algoritmos em grafos.
 
 ### Processo de Desenvolvimento
 
@@ -94,16 +94,16 @@ O site foi desenvolvido utilizando a linguagem de marcação **HTML5**, style sh
 
 ### Recursos
 
-No momento atual o site possúi os seguintes recursos:
+No momento atual o site possui os seguintes recursos:
 
-- Visualização de algorítmos em grafos step-by-step em tempo real
-- Grafos pre-definidos para utilização rápida
+- Visualização de algoritmos em grafos step-by-step em tempo real
+- Grafos pré-definidos para utilização rápida
 - Construtor interativo de grafos para casos de uso mais complexos
 - Exportação e Importação de grafos construidos
 
-### Algorítmos
+### Algoritmos
 
-No momento atual o site possúi os seguintes algorítmos:
+No momento atual o site possui os seguintes algoritmos:
 
 - Dijkstra's algorithm
 
