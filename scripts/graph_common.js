@@ -10,7 +10,7 @@
 const url = new URL(window.location.href);
 
 /**
- * Referência global ao algorítmo no link da página.
+ * Referência global ao algoritmo no link da página.
  * @type {string}
  */
 const algorithm = url.searchParams.get("algorithm")

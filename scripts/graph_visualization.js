@@ -1,5 +1,5 @@
 /**
- * @file Valores globais e funções variadas para a visualização de algorítmos em grafos.
+ * @file Valores globais e funções variadas para a visualização de algoritmos em grafos.
  * @author Luca Assis Argolo (luca.argolo@ufba.br)
  */
 
@@ -16,7 +16,7 @@ const dist = new Map()
 const prev = new Map()
 
 /**
- * Variável global referente ao array de vértices que já foram analizados pelo algorítmo.
+ * Variável global referente ao array de vértices que já foram analizados pelo algoritmo.
  * @type {Vertice[]}
  */
 let probedVertices = []
@@ -28,7 +28,7 @@ let probedVertices = []
 let probingVertice = null
 
 /**
- * Variável global referente ao array de arestas que já foram analizados pelo algorítmo.
+ * Variável global referente ao array de arestas que já foram analizados pelo algoritmo.
  * @type {Edge[]}
  */
 let probedEdges = []
@@ -46,7 +46,7 @@ let probingEdge = null
 let blockingSteps = false
 
 /**
- * Inicia a visualização do algorítmo.
+ * Inicia a visualização do algoritmo.
  */
 function startVisualization() {
     const result = document.getElementById("result")
@@ -83,9 +83,9 @@ function nextStep() {
 }
 
 /**
- * Altera a instrução do pseudocódigo e bloqueia a visualização do algorítmo, por um tempo ou até o usuário pressionar o botão "Passo Seguinte".
+ * Altera a instrução do pseudocódigo e bloqueia a visualização do algoritmo, por um tempo ou até o usuário pressionar o botão "Passo Seguinte".
  * @param {number} line Linha da instrução do pseudocódigo.
- * @return {Promise<void>} Promise que bloqueia a visualização do algorítmo.
+ * @return {Promise<void>} Promise que bloqueia a visualização do algoritmo.
  */
 async function nextInstruction(line) {
     pseudocode.innerText = pseudocode.innerText.replace("=>", "  ")
@@ -116,9 +116,9 @@ function resetState() {
 }
 
 /**
- * Bloqueia a vizualização do algorítmo por uma quantidade específica de tempo.
- * @param {number} milliseconds Quantidade de milisegundos que o algorítmo ficará bloqueado.
- * @return {Promise<void>} Promise que bloqueia a visualização do algorítmo.
+ * Bloqueia a vizualização do algoritmo por uma quantidade específica de tempo.
+ * @param {number} milliseconds Quantidade de milisegundos que o algoritmo ficará bloqueado.
+ * @return {Promise<void>} Promise que bloqueia a visualização do algoritmo.
  */
 const sleep = (milliseconds) => {
     return new Promise(resolve => {
@@ -127,7 +127,7 @@ const sleep = (milliseconds) => {
 }
 
 /**
- * Limpa o canvas, renderiza todos os elementos do grafo nele e depois renderiza todos os elementos da visualização do algorítmo.
+ * Limpa o canvas, renderiza todos os elementos do grafo nele e depois renderiza todos os elementos da visualização do algoritmo.
  */
 function drawVisualizationCanvas() {
     context.lineWidth = 3

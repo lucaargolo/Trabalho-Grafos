@@ -1,15 +1,15 @@
 /**
- * @file Implementação dos algorítmos.
+ * @file Implementação dos algoritmos.
  * @author Luca Assis Argolo (luca.argolo@ufba.br)
  */
 
 /** @class Dijkstra
- *  @classdesc Implementação do algorítmo de Dijkstra e validação dos grafos
+ *  @classdesc Implementação do algoritmo de Dijkstra e validação dos grafos
  */
 class Dijkstra {
 
     /**
-     * Pseudocódigo para visualização do passo a passo do algorítmo
+     * Pseudocódigo para visualização do passo a passo do algoritmo
      * @type {string}
      */
     pseudocode = ` 
@@ -37,10 +37,10 @@ class Dijkstra {
    22      return dist[], prev[]
 `
     /**
-     *  Roda o algorítmo no grafo
-     *  @param {Graph} graph Grafo no qual o algorítmo será executado
+     *  Roda o algoritmo no grafo
+     *  @param {Graph} graph Grafo no qual o algoritmo será executado
      *  @param {Vertice} source Vértice de início do grafo
-     *  @return {string} Retorna resultado escrito do algorítmo
+     *  @return {string} Retorna resultado escrito do algoritmo
      */
     async run(graph, source) {
 
@@ -108,17 +108,17 @@ class Dijkstra {
     }
 
     /**
-     *  Roda o algorítmo no grafo
+     *  Roda o algoritmo no grafo
      *  @param {Graph} graph Grafo que será validado
      *  @return {string|null} String com erro de validação, ou null caso o grafo seja validado com sucesso
      */
     verify(graph) {
         if(graph.startVertice === null) {
-            return "Para executar o algorítmo é necessário que o grafo possua um vértice de inicio."
+            return "Para executar o algoritmo é necessário que o grafo possua um vértice de inicio."
         }
         for(let edge of graph.edges) {
             if(edge.value < 0) {
-                return "Para executar o algorítmo é necessário que todas as arestas possuam valor positivo."
+                return "Para executar o algoritmo é necessário que todas as arestas possuam valor positivo."
             }
         }
         return null
@@ -127,7 +127,7 @@ class Dijkstra {
 }
 
 /**
- * Objeto contendo todos os algorítmos implementados no programa
+ * Objeto contendo todos os algoritmos implementados no programa
  * @type {{dijkstra: Dijkstra}}
  */
 const algorithms = {
